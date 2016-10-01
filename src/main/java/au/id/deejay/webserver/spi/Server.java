@@ -18,4 +18,11 @@ public interface Server {
 	 * @throws IllegalStateException if the server is not started
 	 */
 	void stop();
+
+	/**
+	 * Checks if the server is currently running.
+	 *
+	 * @return Returns true if the server is running
+	 */
+	boolean running();
 }

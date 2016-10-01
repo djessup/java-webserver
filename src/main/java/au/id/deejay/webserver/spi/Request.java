@@ -1,5 +1,7 @@
 package au.id.deejay.webserver.spi;
 
+import au.id.deejay.webserver.request.HttpVersion;
+
 import java.net.URI;
 
 /**
@@ -8,6 +10,7 @@ import java.net.URI;
  * @author David Jessup
  */
 public interface Request extends HttpMessage {
-	String method();
+	HttpMethod method();
 	URI uri();
+	HttpVersion version();
 }

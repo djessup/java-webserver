@@ -222,7 +222,7 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Logging dependencies -->
+    <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -233,6 +233,14 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.21</version>
     </dependency>
+
+    <!-- Command line options parser -->
+    <dependency>
+      <groupId>net.sf.jopt-simple</groupId>
+      <artifactId>jopt-simple</artifactId>
+      <version>5.0.2</version>
+    </dependency>
+
   </dependencies>
 
 </project>

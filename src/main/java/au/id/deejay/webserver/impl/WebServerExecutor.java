@@ -1,6 +1,8 @@
 package au.id.deejay.webserver.impl;
 
 import au.id.deejay.webserver.exception.ServerException;
+import au.id.deejay.webserver.request.RequestFactory;
+import au.id.deejay.webserver.response.ResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,18 +21,20 @@ public class WebServerExecutor implements Runnable {
 	private static final Logger LOG = LoggerFactory.getLogger(WebServerExecutor.class);
 
 	private int port;
-	private String docroot;
 	private int timeout;
 	private int maxThreads;
+	private final RequestFactory requestFactory;
+	private final ResponseFactory responseFactory;
 
 	private ExecutorService threadPool;
 	private boolean running;
 
-	public WebServerExecutor(int port, String docroot, int timeout, int maxThreads) {
+	public WebServerExecutor(int port, int timeout, int maxThreads, RequestFactory requestFactory, ResponseFactory responseFactory) {
 		this.port = port;
-		this.docroot = docroot;
 		this.timeout = timeout;
 		this.maxThreads = maxThreads;
+		this.requestFactory = requestFactory;
+		this.responseFactory = responseFactory;
 
 		running = false;
 	}
@@ -71,7 +75,7 @@ public class WebServerExecutor implements Runnable {
 	}
 
 	private Runnable assignWorker(Socket client) {
-		return new WebWorker(client);
+		return new WebWorker(client, requestFactory, responseFactory);
 	}
 
 	private ServerSocket serverSocket() {

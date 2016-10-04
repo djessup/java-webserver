@@ -1,8 +1,13 @@
 package au.id.deejay.webserver.impl;
 
+import au.id.deejay.webserver.handler.DocrootHandler;
+import au.id.deejay.webserver.request.RequestFactory;
+import au.id.deejay.webserver.response.ResponseFactory;
 import au.id.deejay.webserver.spi.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
 
 /**
  * @author David Jessup
@@ -46,7 +51,10 @@ public class WebServer implements Server {
 
 		LOG.info("Starting web server on port {} with {} worker threads", port, maxThreads);
 
-		executor = new WebServerExecutor(port, docroot, timeout, maxThreads);
+		RequestFactory requestFactory = new RequestFactory();
+		ResponseFactory responseFactory = new ResponseFactory(Collections.singletonList(new DocrootHandler(docroot)));
+
+		executor = new WebServerExecutor(port, timeout, maxThreads, requestFactory, responseFactory);
 
 		Thread executorThread = new Thread(executor);
 		executorThread.start();

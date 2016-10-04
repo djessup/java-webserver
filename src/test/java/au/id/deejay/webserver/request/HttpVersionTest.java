@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -74,6 +75,15 @@ public class HttpVersionTest {
 		assertThat(HttpVersion.HTTP_1_0.equals(HttpVersion.HTTP_1_0), is(true));
 		assertThat(HttpVersion.HTTP_1_0.equals(HttpVersion.HTTP_1_1), is(false));
 		assertThat(HttpVersion.HTTP_1_0.equals("not a version object"), is(false));
+	}
+
+	@Test
+	public void testHashCode() throws Exception {
+		HttpVersion version1 = new HttpVersion(1, 0);
+		HttpVersion version2 = new HttpVersion(1, 0);
+
+		assertThat(version1.hashCode(), is(equalTo(version2.hashCode())));
+		assertThat(version1.hashCode(), is(not(equalTo(HttpVersion.HTTP_1_1.hashCode()))));
 	}
 
 	@Test

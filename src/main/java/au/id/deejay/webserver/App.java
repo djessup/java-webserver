@@ -1,24 +1,26 @@
 package au.id.deejay.webserver;
 
 
+import au.id.deejay.webserver.handler.DocrootHandler;
+import au.id.deejay.webserver.handler.ServerInfoHandler;
 import au.id.deejay.webserver.impl.WebServer;
+import au.id.deejay.webserver.spi.RequestHandler;
 import au.id.deejay.webserver.spi.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * Main application bootstrap class.
- * <p>
- * Parses and validates options from the command line then uses them to create a new server instance.
+ * Main application bootstrap class. Parses CLI options and uses them to create a new server instance.
  */
 public class App {
 
-	/**
-	 * Logger
-	 */
 	private static final Logger LOG = LoggerFactory.getLogger(App.class);
+
+	private App() {}
 
 	/**
 	 * Main application loop. Parses the command line args then tries to start a server instance.
@@ -37,12 +39,18 @@ public class App {
 
 		// Otherwise read the CLI options (or defaults, as defined in CommandLineOptions)
 		int port = options.port();
-		String docroot = options.docroot();
 		int timeout = options.timeout();
 		int maxThreads = options.maxThreads();
+		String docroot = options.docroot();
+
+		// Configure request handlers
+		RequestHandler serverInfoHandler = new ServerInfoHandler(port, timeout, maxThreads, docroot, System.currentTimeMillis());
+		RequestHandler docrootHandler = new DocrootHandler(docroot);
+
+		List<RequestHandler> requestHandlers = Arrays.asList(serverInfoHandler, docrootHandler);
 
 		// Start the web server
-		Server server = new WebServer(port, docroot, timeout, maxThreads);
+		Server server = new WebServer(port, timeout, maxThreads, requestHandlers);
 		server.start();
 	}
 

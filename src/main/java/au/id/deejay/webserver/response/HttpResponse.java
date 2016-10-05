@@ -1,6 +1,7 @@
 package au.id.deejay.webserver.response;
 
 import au.id.deejay.webserver.headers.HttpHeaders;
+import au.id.deejay.webserver.request.HttpVersion;
 import au.id.deejay.webserver.spi.Headers;
 import au.id.deejay.webserver.spi.Response;
 
@@ -16,19 +17,21 @@ public class HttpResponse implements Response {
 	private HttpStatus status;
 	private Headers headers;
 	private String body;
+	private HttpVersion version;
 
-	public HttpResponse(HttpStatus status) {
-		this(status, new HttpHeaders(), "");
+	public HttpResponse(HttpStatus status, HttpVersion version) {
+		this(status, new HttpHeaders(), "", version);
 	}
 
-	public HttpResponse(HttpStatus status, String body) {
-		this(status, new HttpHeaders(), body);
+	public HttpResponse(HttpStatus status, String body, HttpVersion version) {
+		this(status, new HttpHeaders(), body, version);
 	}
 
-	public HttpResponse(HttpStatus status, Headers headers, String body) {
+	public HttpResponse(HttpStatus status, Headers headers, String body, HttpVersion version) {
 		this.status = status;
 		this.headers = headers;
 		this.body = body;
+		this.version = version;
 	}
 
 	@Override
@@ -39,6 +42,11 @@ public class HttpResponse implements Response {
 	@Override
 	public Headers headers() {
 		return headers;
+	}
+
+	@Override
+	public HttpVersion version() {
+		return version;
 	}
 
 	@Override

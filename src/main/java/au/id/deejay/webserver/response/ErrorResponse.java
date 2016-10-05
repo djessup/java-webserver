@@ -1,5 +1,7 @@
 package au.id.deejay.webserver.response;
 
+import au.id.deejay.webserver.request.HttpVersion;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -10,14 +12,14 @@ import java.text.MessageFormat;
  */
 public class ErrorResponse extends HttpResponse {
 
-	public static final ErrorResponse BAD_REQUEST_400 = new ErrorResponse(HttpStatus.BAD_REQUEST_400);
-	public static final ErrorResponse NOT_FOUND_404 = new ErrorResponse(HttpStatus.NOT_FOUND_404);
-	public static final ErrorResponse INTERNAL_SERVER_ERROR_500 = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR_500);
-	public static final ErrorResponse NOT_IMPLEMENTED_501 = new ErrorResponse(HttpStatus.NOT_IMPLEMENTED_501);
-	public static final ErrorResponse HTTP_VERSION_NOT_SUPPORTED_505 = new ErrorResponse(HttpStatus.HTTP_VERSION_NOT_SUPPORTED_505);
+	public static final ErrorResponse BAD_REQUEST_400 = new ErrorResponse(HttpStatus.BAD_REQUEST_400, HttpVersion.HTTP_1_0);
+	public static final ErrorResponse NOT_FOUND_404 = new ErrorResponse(HttpStatus.NOT_FOUND_404, HttpVersion.HTTP_1_0);
+	public static final ErrorResponse INTERNAL_SERVER_ERROR_500 = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR_500, HttpVersion.HTTP_1_0);
+	public static final ErrorResponse NOT_IMPLEMENTED_501 = new ErrorResponse(HttpStatus.NOT_IMPLEMENTED_501, HttpVersion.HTTP_1_0);
+	public static final ErrorResponse HTTP_VERSION_NOT_SUPPORTED_505 = new ErrorResponse(HttpStatus.HTTP_VERSION_NOT_SUPPORTED_505, HttpVersion.HTTP_1_0);
 
-	public ErrorResponse(HttpStatus status) {
-		super(status);
+	public ErrorResponse(HttpStatus status, HttpVersion version) {
+		super(status, version);
 	}
 
 	@Override

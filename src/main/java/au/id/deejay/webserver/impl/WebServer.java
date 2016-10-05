@@ -1,13 +1,13 @@
 package au.id.deejay.webserver.impl;
 
-import au.id.deejay.webserver.handler.DocrootHandler;
 import au.id.deejay.webserver.request.RequestFactory;
 import au.id.deejay.webserver.response.ResponseFactory;
+import au.id.deejay.webserver.spi.RequestHandler;
 import au.id.deejay.webserver.spi.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
+import java.util.List;
 
 /**
  * @author David Jessup
@@ -17,46 +17,59 @@ public class WebServer implements Server {
 	private static final Logger LOG = LoggerFactory.getLogger(WebServer.class);
 
 	private int port;
-	private String docroot;
 	private int timeout;
 	private int maxThreads;
+	private List<RequestHandler> requestHandlers;
 
 	private boolean running;
 
 	private WebServerExecutor executor;
+	private Thread executorThread;
 
 	/**
-	 * @param port       The port number to bind the server to.
-	 * @param docroot    Path to the docroot directory containing files the server can serve.
-	 * @param timeout    Request timeout (in seconds). Requests which take longer than this will be terminated.
-	 * @param maxThreads The maximum number of threads to spawn for servicing requests.
+	 * @param port            The port number to bind the server to.
+	 * @param timeout         Request timeout (in seconds). Requests which take longer than this will be terminated.
+	 * @param maxThreads      The maximum number of worker threads to use for servicing requests.
+	 * @param requestHandlers A list of handlers to use to service requests. The order of the list determines the
+	 *                        priority of the handlers (handlers appearing first will be given first opportunity to
+	 *                        handle requests).
 	 * @throws IllegalArgumentException if the port number is outside the valid range (i.e. 0-65535)
 	 */
-	public WebServer(int port, String docroot, int timeout, int maxThreads) {
+	public WebServer(int port, int timeout, int maxThreads, List<RequestHandler> requestHandlers) {
 
-		// TODO validate options
+		if (port < 0 || port > 65535) {
+			throw new IllegalArgumentException("Port must be in the range 0-65535.");
+		}
+
+		if (maxThreads <= 0) {
+			throw new IllegalArgumentException("Max threads must be greater than zero.");
+		}
+
+		if (requestHandlers == null || requestHandlers.isEmpty()) {
+			throw new IllegalArgumentException("At least one request handler must be provided, otherwise the server won't be able to do anything!");
+		}
 
 		this.port = port;
-		this.docroot = docroot;
 		this.timeout = timeout;
 		this.maxThreads = maxThreads;
+		this.requestHandlers = requestHandlers;
 	}
 
 	@Override
 	public synchronized void start() {
 
 		if (running()) {
-			throw new IllegalStateException("Server is already running");
+			throw new IllegalStateException("Server is already running.");
 		}
 
-		LOG.info("Starting web server on port {} with {} worker threads", port, maxThreads);
+		LOG.info("Starting web server on port {} with {} worker threads.", port, maxThreads);
 
 		RequestFactory requestFactory = new RequestFactory();
-		ResponseFactory responseFactory = new ResponseFactory(Collections.singletonList(new DocrootHandler(docroot)));
+		ResponseFactory responseFactory = new ResponseFactory(requestHandlers);
 
 		executor = new WebServerExecutor(port, timeout, maxThreads, requestFactory, responseFactory);
 
-		Thread executorThread = new Thread(executor);
+		executorThread = new Thread(executor);
 		executorThread.start();
 
 		running = true;
@@ -66,15 +79,15 @@ public class WebServer implements Server {
 	public synchronized void stop() {
 
 		if (!running()) {
-			throw new IllegalStateException("Server isn't running");
+			throw new IllegalStateException("Server isn't running.");
 		}
 
-		LOG.info("Stopping web server");
+		LOG.info("Stopping server");
 
 		executor.stop();
 		running = false;
 
-		LOG.info("Server stopped");
+		LOG.info("Server stopped.");
 
 	}
 

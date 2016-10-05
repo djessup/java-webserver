@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.List;
@@ -38,8 +39,14 @@ public class WebWorker implements Runnable {
 		Request request;
 		Response response;
 
+		InputStream inputStream = null;
+		OutputStream outputStream = null;
+
 		try {
-			request = requestFactory.request(client.getInputStream());
+			inputStream = client.getInputStream();
+			outputStream = client.getOutputStream();
+
+			request = requestFactory.request(inputStream);
 			response = responseFactory.response(request);
 		} catch (IOException e) {
 			LOG.info("Bad request from " + client.getRemoteSocketAddress().toString(), e);
@@ -47,7 +54,11 @@ public class WebWorker implements Runnable {
 		}
 
 		try {
-			writeResponse(client.getOutputStream(), response);
+			if (outputStream != null) {
+				writeResponse(outputStream, response);
+				outputStream.close();
+				inputStream.close();
+			}
 		} catch (IOException e) {
 			LOG.error("Failed to send response", e);
 		} finally {
@@ -61,7 +72,7 @@ public class WebWorker implements Runnable {
 		}
 	}
 
-	private void writeResponse(OutputStream outputStream, Response response) {
+	private void writeResponse(OutputStream outputStream, Response response) throws IOException {
 		new ResponseWriter(outputStream).writeResponse(response);
 	}
 }

@@ -1,6 +1,7 @@
 package au.id.deejay.webserver.response;
 
 import au.id.deejay.webserver.exception.ResponseException;
+import au.id.deejay.webserver.request.HttpVersion;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -12,8 +13,8 @@ public class FileResponse extends HttpResponse {
 
 	private final File file;
 
-	public FileResponse(File file) {
-		super(HttpStatus.OK_200);
+	public FileResponse(File file, HttpVersion version) {
+		super(HttpStatus.OK_200, version);
 		this.file = file;
 		headers().set("Content-length", String.valueOf(file.length()));
 		try {

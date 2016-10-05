@@ -7,6 +7,11 @@ import au.id.deejay.webserver.spi.Response;
 import java.util.List;
 
 /**
+ * Creates a {@link Response} to a {@link Request} by asking each {@link RequestHandler}, in order, until one is able to
+ * service the request.
+ * <p>
+ * If no {@link RequestHandler} provides a {@link Response} a 501 error response will be returned.
+ *
  * @author David Jessup
  */
 public class ResponseFactory {

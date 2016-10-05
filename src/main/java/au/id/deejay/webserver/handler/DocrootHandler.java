@@ -1,5 +1,6 @@
 package au.id.deejay.webserver.handler;
 
+import au.id.deejay.webserver.response.FileResponse;
 import au.id.deejay.webserver.spi.Request;
 import au.id.deejay.webserver.spi.RequestHandler;
 import au.id.deejay.webserver.spi.Response;
@@ -7,6 +8,11 @@ import au.id.deejay.webserver.spi.Response;
 import java.io.File;
 
 /**
+ * A request handler which handles GET requests by serving files from within a folder.
+ *
+ * e.g. Using a DocrootHandler with docroot = /path/to/docroot and a request like GET /some/file.html the
+ * DocrootHandler would attempt to respond with /path/to/docroot/some/file.html.
+ *
  * @author David Jessup
  */
 public class DocrootHandler implements RequestHandler {
@@ -33,7 +39,7 @@ public class DocrootHandler implements RequestHandler {
 	@Override
 	public Response handle(Request request) {
 		File file = child(request.uri().getPath());
-		return null;
+		return new FileResponse(file, request.version());
 	}
 
 	private File child(String name) {

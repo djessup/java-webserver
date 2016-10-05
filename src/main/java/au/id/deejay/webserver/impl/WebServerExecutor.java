@@ -9,11 +9,14 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * The executor maintains a thread pool for worker threads servicing individual client connections.
+ *
  * @author David Jessup
  */
 public class WebServerExecutor implements Runnable {
@@ -47,23 +50,35 @@ public class WebServerExecutor implements Runnable {
 
 		ServerSocket serverSocket = serverSocket();
 		while (running()) {
-
 			// Wait for a client connection
 			Socket client = acceptConnection(serverSocket);
 
-			// Assign the connection to a worker
-			Runnable worker = assignWorker(client);
+			if (client != null) {
+				// Assign the connection to a worker
+				Runnable worker = assignWorker(client);
 
-			// Queue the worker for execution
-			threadPool.execute(worker);
+				// Queue the worker for execution
+				threadPool.execute(worker);
+			}
 		}
 
+		LOG.info("Shutting down web server executor.");
+
 		try {
+			threadPool.shutdown();
 			threadPool.awaitTermination(timeout, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			LOG.error("Worker thread pool was interrupted while shutting down. Some client connections may have been terminated prematurely.", e);
 			Thread.currentThread().interrupt();
+		} finally {
+			try {
+				serverSocket.close();
+			} catch (IOException e) {
+				LOG.error("Failed to release server port", e);
+			}
 		}
+
+		LOG.info("Web server executor has shutdown.");
 	}
 
 	public synchronized boolean running() {
@@ -75,6 +90,11 @@ public class WebServerExecutor implements Runnable {
 	}
 
 	private Runnable assignWorker(Socket client) {
+		try {
+			client.setSoTimeout(timeout * 1000);
+		} catch (SocketException e) {
+			LOG.warn("Unable to set socket timeout", e);
+		}
 		return new WebWorker(client, requestFactory, responseFactory);
 	}
 
@@ -82,7 +102,7 @@ public class WebServerExecutor implements Runnable {
 		try {
 			return new ServerSocket(port);
 		} catch (IOException e) {
-			throw new ServerException("Failed to acquire server socket on port " + port, e);
+			throw new ServerException("Failed to open server socket on port " + port, e);
 		}
 	}
 
@@ -90,7 +110,7 @@ public class WebServerExecutor implements Runnable {
 		try {
 			return serverSocket.accept();
 		} catch (IOException e) {
-			LOG.info("An error occurred while accepting a client connection", e);
+			LOG.info("Error accepting a client connection", e);
 			return null;
 		}
 	}

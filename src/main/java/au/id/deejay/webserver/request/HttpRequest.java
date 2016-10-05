@@ -1,5 +1,6 @@
 package au.id.deejay.webserver.request;
 
+import au.id.deejay.webserver.headers.HttpHeaders;
 import au.id.deejay.webserver.spi.Headers;
 import au.id.deejay.webserver.spi.HttpMethod;
 import au.id.deejay.webserver.spi.Request;
@@ -26,6 +27,8 @@ public class HttpRequest implements Request {
 		// First line is the request line
 		requestLine = new RequestLine(clientReader.readLine().trim());
 
+		headers = new HttpHeaders();
+
 		// Subsequent lines are request headers until a blank line is encountered
 		String line;
 		while (!"".equals(line = clientReader.readLine()) && line != null) {
@@ -34,10 +37,15 @@ public class HttpRequest implements Request {
 		}
 
 		StringBuilder requestBody = new StringBuilder();
-		while ((line = clientReader.readLine()) != null) {
-			requestBody.append(line)
-					.append("\n");
+
+		if (clientReader.ready()) {
+			while (!"".equals(line = clientReader.readLine()) && line != null) {
+				requestBody.append(line)
+						.append("\n");
+			}
 		}
+
+		body = requestBody.toString();
 	}
 
 	private void parseHeaderLine(String line) {

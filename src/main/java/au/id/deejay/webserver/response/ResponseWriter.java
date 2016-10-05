@@ -13,7 +13,8 @@ import java.nio.charset.StandardCharsets;
 import static au.id.deejay.webserver.MessageConstants.CRLF;
 
 /**
- * Writes a response to an {@link OutputStream}
+ * Writes a {@link Response} to an {@link OutputStream}.
+ *
  * @author David Jessup
  */
 public class ResponseWriter extends Writer {
@@ -33,9 +34,10 @@ public class ResponseWriter extends Writer {
 			write(response.headers().toString());
 			write(CRLF);
 			IOUtils.copy(response.body(), outputStream);
+			flush();
 		} catch (IOException e) {
-			LOG.warn("Failed to write response", e);
-			// TODO rethrow exception instead
+			// TODO rethrow exception instead, for upstream handling
+			LOG.warn("Failed to write response.", e);
 		}
 	}
 

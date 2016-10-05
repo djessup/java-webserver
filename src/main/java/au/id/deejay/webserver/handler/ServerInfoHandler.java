@@ -10,6 +10,9 @@ import au.id.deejay.webserver.spi.Response;
 import java.text.MessageFormat;
 
 /**
+ * A request handler which provides a brief summary of the server's runtime configuration when a GET request is made
+ * to /serverInfo
+ *
  * @author David Jessup
  */
 public class ServerInfoHandler implements RequestHandler {
@@ -21,6 +24,14 @@ public class ServerInfoHandler implements RequestHandler {
 	private int maxThreads;
 	private String docroot;
 	private long startTime;
+
+	public ServerInfoHandler(int port, int timeout, int maxThreads, String docroot, long startTime) {
+		this.port = port;
+		this.timeout = timeout;
+		this.maxThreads = maxThreads;
+		this.docroot = docroot;
+		this.startTime = startTime;
+	}
 
 	@Override
 	public boolean canHandle(Request request) {
@@ -40,7 +51,8 @@ public class ServerInfoHandler implements RequestHandler {
 										maxThreads,
 										timeout,
 										uptime
-								)
+								),
+								request.version()
 		);
 	}
 }

@@ -45,9 +45,9 @@ public class ServerInfoHandler implements RequestHandler {
 
 		return new HttpResponse(HttpStatus.OK_200,
 								MessageFormat.format(
-										"Serving files from {0} on port {1} with {2} threads and a timeout of {3} seconds.\nUptime: {4}",
+										"Serving files from {0} on port {1} with {2} threads and a timeout of {3} seconds.\nUptime: {4}s",
 										docroot,
-										port,
+										String.valueOf(port),
 										maxThreads,
 										timeout,
 										uptime

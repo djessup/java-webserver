@@ -1,8 +1,7 @@
 package au.id.deejay.webserver.server;
 
 import au.id.deejay.webserver.response.ResponseFactory;
-import au.id.deejay.webserver.spi.RequestHandler;
-import au.id.deejay.webserver.spi.Server;
+import au.id.deejay.webserver.api.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +10,7 @@ import java.util.List;
 /**
  * @author David Jessup
  */
-public class WebServer implements Server {
+public class WebServer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebServer.class);
 
@@ -59,7 +58,11 @@ public class WebServer implements Server {
 		this.requestHandlers = requestHandlers;
 	}
 
-	@Override
+	/**
+	 * Starts the web server.
+	 *
+	 * @throws IllegalStateException if the server is already running or is not correctly configured.
+	 */
 	public synchronized void start() {
 
 		if (running()) {
@@ -78,7 +81,11 @@ public class WebServer implements Server {
 		running = true;
 	}
 
-	@Override
+	/**
+	 * Gracefully stops the server, waiting for established connections to either complete or timeout.
+	 *
+	 * @throws IllegalStateException if the server is not started
+	 */
 	public synchronized void stop() {
 
 		if (!running()) {
@@ -94,7 +101,11 @@ public class WebServer implements Server {
 
 	}
 
-	@Override
+	/**
+	 * Checks if the server is currently running.
+	 *
+	 * @return Returns true if the server is running
+	 */
 	public synchronized boolean running() {
 		return running;
 	}

@@ -1,12 +1,12 @@
 package au.id.deejay.webserver.server;
 
-import au.id.deejay.webserver.request.RequestReader;
+import au.id.deejay.webserver.io.RequestReader;
 import au.id.deejay.webserver.response.ErrorResponse;
 import au.id.deejay.webserver.response.ResponseFactory;
-import au.id.deejay.webserver.response.ResponseWriter;
-import au.id.deejay.webserver.spi.Request;
-import au.id.deejay.webserver.spi.RequestHandler;
-import au.id.deejay.webserver.spi.Response;
+import au.id.deejay.webserver.io.ResponseWriter;
+import au.id.deejay.webserver.api.Request;
+import au.id.deejay.webserver.api.RequestHandler;
+import au.id.deejay.webserver.api.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class WebWorker implements Runnable {
 			OutputStream outputStream = client.getOutputStream();
 			writeResponse(outputStream, response);
 		} catch (Exception e) {
-			LOG.error("Failed to send response", e);
+			LOG.error("Unable to send response", e);
 		} finally {
 			try {
 				client.close();

@@ -4,8 +4,7 @@ package au.id.deejay.webserver;
 import au.id.deejay.webserver.handler.DocrootHandler;
 import au.id.deejay.webserver.handler.ServerInfoHandler;
 import au.id.deejay.webserver.server.WebServer;
-import au.id.deejay.webserver.spi.RequestHandler;
-import au.id.deejay.webserver.spi.Server;
+import au.id.deejay.webserver.api.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +51,7 @@ public class App {
 		List<RequestHandler> requestHandlers = Arrays.asList(serverInfoHandler, docrootHandler);
 
 		// Create the server
-		Server server = new WebServer(port, timeout, maxThreads, requestHandlers);
+		WebServer server = new WebServer(port, timeout, maxThreads, requestHandlers);
 
 		// Register a shutdown hook to gracefully stop the server when the JVM is terminated
 		Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(server)));
@@ -90,9 +89,9 @@ public class App {
 
 		private static final Logger LOG = LoggerFactory.getLogger(ShutdownHook.class);
 
-		private Server server;
+		private WebServer server;
 
-		ShutdownHook(Server server) {
+		ShutdownHook(WebServer server) {
 			this.server = server;
 		}
 

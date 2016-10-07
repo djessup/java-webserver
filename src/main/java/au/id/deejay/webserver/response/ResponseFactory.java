@@ -1,8 +1,8 @@
 package au.id.deejay.webserver.response;
 
-import au.id.deejay.webserver.spi.Request;
-import au.id.deejay.webserver.spi.RequestHandler;
-import au.id.deejay.webserver.spi.Response;
+import au.id.deejay.webserver.api.Request;
+import au.id.deejay.webserver.api.RequestHandler;
+import au.id.deejay.webserver.api.Response;
 
 import java.util.List;
 

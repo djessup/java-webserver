@@ -1,6 +1,4 @@
-package au.id.deejay.webserver.spi;
-
-import au.id.deejay.webserver.response.HttpStatus;
+package au.id.deejay.webserver.api;
 
 /**
  * Represents a single HTTP response.

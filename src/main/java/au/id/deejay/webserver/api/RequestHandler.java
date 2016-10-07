@@ -1,4 +1,4 @@
-package au.id.deejay.webserver.spi;
+package au.id.deejay.webserver.api;
 
 /**
  * Handles a {@link Request} and returns a response.

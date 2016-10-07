@@ -1,7 +1,8 @@
 package au.id.deejay.webserver.response;
 
+import au.id.deejay.webserver.api.HttpStatus;
 import au.id.deejay.webserver.exception.ResponseException;
-import au.id.deejay.webserver.request.HttpVersion;
+import au.id.deejay.webserver.api.HttpVersion;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -20,18 +21,16 @@ public class FileResponse extends HttpResponse {
 		try {
 			headers().set("Content-type", Files.probeContentType(file.toPath()));
 		} catch (IOException e) {
-			throw new ResponseException("Failed to detect MIME type of " + file.getPath());
+			throw new ResponseException("Failed to detect MIME type of " + file.getPath(), e);
 		}
 	}
 
 	@Override
-	public InputStream body() {
-		try (FileInputStream inputStream = new FileInputStream(file)) {
-			return inputStream;
+	public InputStream stream() {
+		try {
+			return new FileInputStream(file);
 		} catch (FileNotFoundException e) {
 			throw new ResponseException("Requested file does not exist", e);
-		} catch (IOException e) {
-			throw new ResponseException("Failed to read requested file", e);
 		}
 	}
 }

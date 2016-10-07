@@ -1,10 +1,8 @@
-package au.id.deejay.webserver.request;
+package au.id.deejay.webserver.api;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -24,7 +22,7 @@ public class HttpVersionTest {
 	@Test
 	public void testExplicitConstructor() throws Exception {
 		HttpVersion version = new HttpVersion(1, 0);
-		
+
 		assertThat(version.major(), is(equalTo(1)));
 		assertThat(version.minor(), is(equalTo(0)));
 	}

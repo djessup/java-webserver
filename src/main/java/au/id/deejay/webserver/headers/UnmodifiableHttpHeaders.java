@@ -1,8 +1,5 @@
 package au.id.deejay.webserver.headers;
 
-import au.id.deejay.webserver.spi.Header;
-import au.id.deejay.webserver.spi.Headers;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

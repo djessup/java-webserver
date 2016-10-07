@@ -1,11 +1,11 @@
-package au.id.deejay.webserver.request;
+package au.id.deejay.webserver.api;
 
 /**
  * Represents an HTTP version string (e.g. "HTTP/1.1"). Can be constructed explicitly or from an HTTP version string.
  *
  * @author David Jessup
  */
-public class HttpVersion implements Comparable<HttpVersion> {
+public final class HttpVersion implements Comparable<HttpVersion> {
 
 	/**
 	 * Convenience instance for HTTP/1.0

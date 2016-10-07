@@ -1,5 +1,8 @@
 package au.id.deejay.webserver.request;
 
+import au.id.deejay.webserver.api.HttpMethod;
+import au.id.deejay.webserver.api.HttpVersion;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;

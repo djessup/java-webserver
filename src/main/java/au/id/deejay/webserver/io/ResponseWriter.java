@@ -1,11 +1,13 @@
-package au.id.deejay.webserver.response;
+package au.id.deejay.webserver.io;
 
-import au.id.deejay.webserver.spi.Response;
+import au.id.deejay.webserver.api.Response;
+import au.id.deejay.webserver.exception.ResponseException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -30,15 +32,27 @@ public class ResponseWriter extends Writer {
 
 	public void writeResponse(Response response) {
 		try {
-			write(statusLine(response));
-			write(response.headers().toString());
-			write(CRLF);
-			IOUtils.copy(response.body(), outputStream);
-			flush();
+			writeStatusLine(response);
+			writeHeaders(response);
+			writeBody(response);
 		} catch (IOException e) {
-			// TODO rethrow exception instead, for upstream handling
-			LOG.warn("Failed to write response.", e);
+			throw new ResponseException("Failed to write response", e);
 		}
+	}
+
+	private void writeStatusLine(Response response) throws IOException {
+		write(statusLine(response));
+	}
+
+	private void writeHeaders(Response response) throws IOException {
+		write(response.headers().toString());
+		write(CRLF);
+	}
+
+	private void writeBody(Response response) throws IOException {
+		InputStream responseStream = response.stream();
+		IOUtils.copy(responseStream, outputStream);
+		responseStream.close();
 	}
 
 	private String statusLine(Response response) {
@@ -60,14 +74,3 @@ public class ResponseWriter extends Writer {
 		outputStream.close();
 	}
 }
-
-
-//Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-/*
- Full-Response   = Status-Line
-				 *( General-Header
-				  | Response-Header
-				  | Entity-Header )
-				 CRLF
-				 [ Entity-Body ]
-*/

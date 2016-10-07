@@ -1,4 +1,4 @@
-package au.id.deejay.webserver.response;
+package au.id.deejay.webserver.api;
 
 /**
  * HTTP code codes as defined by RFC2616.

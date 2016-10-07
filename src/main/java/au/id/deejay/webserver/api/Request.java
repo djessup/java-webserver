@@ -1,6 +1,4 @@
-package au.id.deejay.webserver.spi;
-
-import au.id.deejay.webserver.request.HttpMethod;
+package au.id.deejay.webserver.api;
 
 import java.net.URI;
 

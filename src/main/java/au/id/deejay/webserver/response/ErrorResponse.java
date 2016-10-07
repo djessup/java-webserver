@@ -1,6 +1,7 @@
 package au.id.deejay.webserver.response;
 
-import au.id.deejay.webserver.request.HttpVersion;
+import au.id.deejay.webserver.api.HttpStatus;
+import au.id.deejay.webserver.api.HttpVersion;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -23,7 +24,7 @@ public class ErrorResponse extends HttpResponse {
 	}
 
 	@Override
-	public InputStream body() {
+	public InputStream stream() {
 		String body = MessageFormat.format("<title>{0} {1}</title><h1>{0} {1}</h1>", status().code(), status().description());
 		return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
 	}

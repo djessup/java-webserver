@@ -1,9 +1,11 @@
 package au.id.deejay.webserver.handler;
 
+import au.id.deejay.webserver.api.RequestHandler;
+import au.id.deejay.webserver.api.HttpMethod;
+import au.id.deejay.webserver.response.ErrorResponse;
 import au.id.deejay.webserver.response.FileResponse;
-import au.id.deejay.webserver.spi.Request;
-import au.id.deejay.webserver.spi.RequestHandler;
-import au.id.deejay.webserver.spi.Response;
+import au.id.deejay.webserver.api.Request;
+import au.id.deejay.webserver.api.Response;
 
 import java.io.File;
 
@@ -33,13 +35,18 @@ public class DocrootHandler implements RequestHandler {
 
 	@Override
 	public boolean canHandle(Request request) {
-		return "GET".equals(request.method());
+		return request.method() == HttpMethod.GET;
 	}
 
 	@Override
 	public Response handle(Request request) {
 		File file = child(request.uri().getPath());
-		return new FileResponse(file, request.version());
+
+		if (file.exists()) {
+			return new FileResponse(file, request.version());
+		}
+
+		return ErrorResponse.NOT_FOUND_404;
 	}
 
 	private File child(String name) {

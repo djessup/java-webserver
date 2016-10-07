@@ -1,11 +1,10 @@
 package au.id.deejay.webserver.headers;
 
-import au.id.deejay.webserver.spi.Header;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * @author David Jessup
@@ -16,52 +15,60 @@ public class HttpHeader implements Header {
 	private List<String> values;
 
 	public HttpHeader(String name) {
-		this.name = name;
-		this.values = new ArrayList<>();
+		this(name, new ArrayList<>());
 	}
 
 	public HttpHeader(String name, String value) {
-		this.name = name;
-		this.values = new ArrayList<>();
-		this.values.add(value);
+		this(name, Collections.singletonList(value));
 	}
 
 	public HttpHeader(String name, String... values) {
 		this(name, Arrays.asList(values));
 	}
 
-	public HttpHeader(String name, List<String> values) {
+	public HttpHeader(String name, Collection<String> values) {
+
+		if (StringUtils.isBlank(name)) {
+			throw new IllegalArgumentException("Name must not be empty.");
+		}
+
 		this.name = name;
-		this.values = values;
+		this.values = new ArrayList<>(values);
 	}
 
+	@Nonnull
 	@Override
 	public String name() {
 		return name;
 	}
 
+	@CheckForNull
 	@Override
 	public String value() {
 		return !values.isEmpty() ? values.get(0) : null;
 	}
 
+	@Nonnull
 	@Override
 	public List<String> values() {
 		return Collections.unmodifiableList(values);
 	}
 
+	@Nonnull
 	@Override
 	public Header add(String value) {
 		values.add(value);
 		return this;
 	}
 
+	@Nonnull
 	@Override
 	public Header add(String... values) {
 		Collections.addAll(this.values, values);
 		return this;
 	}
 
+	@Nonnull
 	@Override
 	public Header set(String value) {
 		this.values.clear();
@@ -69,13 +76,15 @@ public class HttpHeader implements Header {
 		return this;
 	}
 
+	@Nonnull
 	@Override
 	public Header set(String... values) {
-		this.values().clear();
+		this.values.clear();
 		Collections.addAll(this.values, values);
 		return this;
 	}
 
+	@Nonnull
 	@Override
 	public Header remove(String value) {
 		values.remove(value);

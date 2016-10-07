@@ -1,7 +1,9 @@
 package au.id.deejay.webserver.request;
 
-import au.id.deejay.webserver.spi.Headers;
-import au.id.deejay.webserver.spi.Request;
+import au.id.deejay.webserver.api.HttpMethod;
+import au.id.deejay.webserver.api.HttpVersion;
+import au.id.deejay.webserver.api.Request;
+import au.id.deejay.webserver.headers.Headers;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -52,7 +54,7 @@ public class HttpRequest implements Request {
 //			}
 //		}
 //
-//		body = requestBody.toString();
+//		stream = requestBody.toString();
 //	}
 //
 //	private void parseHeaderLine(String line) {
@@ -74,7 +76,7 @@ public class HttpRequest implements Request {
 //	}
 
 	@Override
-	public InputStream body() {
+	public InputStream stream() {
 		return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
 	}
 

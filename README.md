@@ -31,3 +31,7 @@ Specify an alternate docroot:
 Display all options and usage information:
 
 `java -jar java-webserver.jar --help`
+
+== Acknowledgements
+
+* Favicon courtesy of [FamFamFam Silk icons collection](http://www.famfamfam.com/lab/icons/silk/), licensed under Creative Commons Attribution 3.0 License

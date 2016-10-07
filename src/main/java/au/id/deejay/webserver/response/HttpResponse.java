@@ -1,9 +1,10 @@
 package au.id.deejay.webserver.response;
 
+import au.id.deejay.webserver.api.HttpStatus;
+import au.id.deejay.webserver.api.Response;
 import au.id.deejay.webserver.headers.HttpHeaders;
-import au.id.deejay.webserver.request.HttpVersion;
-import au.id.deejay.webserver.spi.Headers;
-import au.id.deejay.webserver.spi.Response;
+import au.id.deejay.webserver.api.HttpVersion;
+import au.id.deejay.webserver.headers.Headers;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -35,7 +36,7 @@ public class HttpResponse implements Response {
 	}
 
 	@Override
-	public InputStream body() {
+	public InputStream stream() {
 		return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
 	}
 

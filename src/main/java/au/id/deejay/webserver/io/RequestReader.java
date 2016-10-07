@@ -1,11 +1,13 @@
-package au.id.deejay.webserver.request;
+package au.id.deejay.webserver.io;
 
-import au.id.deejay.webserver.exception.RequestParsingException;
+import au.id.deejay.webserver.api.Request;
+import au.id.deejay.webserver.exception.RequestException;
 import au.id.deejay.webserver.headers.HttpHeader;
 import au.id.deejay.webserver.headers.HttpHeaders;
-import au.id.deejay.webserver.spi.Header;
-import au.id.deejay.webserver.spi.Headers;
-import au.id.deejay.webserver.spi.Request;
+import au.id.deejay.webserver.headers.Header;
+import au.id.deejay.webserver.headers.Headers;
+import au.id.deejay.webserver.request.HttpRequest;
+import au.id.deejay.webserver.request.RequestLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +47,7 @@ public class RequestReader extends Reader {
 
 			return new HttpRequest(requestLine, headers, body);
 		} catch (Exception e) {
-			throw new RequestParsingException("Unable to parse input stream into a Request object.", e);
+			throw new RequestException("Unable to parse input stream into a Request object.", e);
 		}
 	}
 

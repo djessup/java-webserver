@@ -1,6 +1,6 @@
-package au.id.deejay.webserver.impl;
+package au.id.deejay.webserver.server;
 
-import au.id.deejay.webserver.request.RequestFactory;
+import au.id.deejay.webserver.request.RequestReader;
 import au.id.deejay.webserver.response.ErrorResponse;
 import au.id.deejay.webserver.response.ResponseFactory;
 import au.id.deejay.webserver.response.ResponseWriter;
@@ -22,15 +22,12 @@ import java.util.List;
 public class WebWorker implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebWorker.class);
-
-	private List<RequestHandler> requestHandlers;
 	private final Socket client;
-	private final RequestFactory requestFactory;
 	private final ResponseFactory responseFactory;
+	private List<RequestHandler> requestHandlers;
 
-	public WebWorker(Socket client, RequestFactory requestFactory, ResponseFactory responseFactory) {
+	public WebWorker(Socket client, ResponseFactory responseFactory) {
 		this.client = client;
-		this.requestFactory = requestFactory;
 		this.responseFactory = responseFactory;
 	}
 
@@ -39,14 +36,9 @@ public class WebWorker implements Runnable {
 		Request request;
 		Response response;
 
-		InputStream inputStream = null;
-		OutputStream outputStream = null;
-
 		try {
-			inputStream = client.getInputStream();
-			outputStream = client.getOutputStream();
-
-			request = requestFactory.request(inputStream);
+			InputStream inputStream = client.getInputStream();
+			request = readRequest(inputStream);
 			response = responseFactory.response(request);
 		} catch (IOException e) {
 			LOG.info("Bad request from " + client.getRemoteSocketAddress().toString(), e);
@@ -54,22 +46,21 @@ public class WebWorker implements Runnable {
 		}
 
 		try {
-			if (outputStream != null) {
-				writeResponse(outputStream, response);
-				outputStream.close();
-				inputStream.close();
-			}
-		} catch (IOException e) {
+			OutputStream outputStream = client.getOutputStream();
+			writeResponse(outputStream, response);
+		} catch (Exception e) {
 			LOG.error("Failed to send response", e);
 		} finally {
-			if (!client.isClosed()) {
-				try {
-					client.close();
-				} catch (IOException e) {
-					LOG.error("Failed to close client connection", e);
-				}
+			try {
+				client.close();
+			} catch (IOException e) {
+				LOG.error("Failed to close client connection", e);
 			}
 		}
+	}
+
+	private Request readRequest(InputStream inputStream) {
+		return new RequestReader(inputStream).readRequest();
 	}
 
 	private void writeResponse(OutputStream outputStream, Response response) throws IOException {

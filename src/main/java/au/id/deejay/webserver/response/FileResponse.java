@@ -20,7 +20,7 @@ public class FileResponse extends HttpResponse {
 		try {
 			headers().set("Content-type", Files.probeContentType(file.toPath()));
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new ResponseException("Failed to detect MIME type of " + file.getPath());
 		}
 	}
 

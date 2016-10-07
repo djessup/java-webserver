@@ -2,16 +2,32 @@
 
 A simple multi-threaded web server written in Java and implementing the HTTP/1.1 specification.
 
+== Requirements
+
+* Java 8
+
+== Building
+
+Run the Maven `package` goal:
+
+`mvn clean package`
+
+This will produce an executable JAR in the `target` directory.
+
 == Usage
 
-Start the server on the default port (8080):
+Start the server with default settings:
 
 `java -jar java-webserver.jar`
 
 Start the server on a specific port:
 
-`java -jar java-webserver.jar [port]`
+`java -jar java-webserver.jar --port 80`
 
-Display usage information:
+Specify an alternate docroot:
+
+`java -jar java-webserver.jar --docroot /path/to/docroot`
+
+Display all options and usage information:
 
 `java -jar java-webserver.jar --help`

@@ -3,7 +3,7 @@ package au.id.deejay.webserver;
 
 import au.id.deejay.webserver.handler.DocrootHandler;
 import au.id.deejay.webserver.handler.ServerInfoHandler;
-import au.id.deejay.webserver.impl.WebServer;
+import au.id.deejay.webserver.server.WebServer;
 import au.id.deejay.webserver.spi.RequestHandler;
 import au.id.deejay.webserver.spi.Server;
 import org.slf4j.Logger;
@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * Main application bootstrap class. Parses CLI options and uses them to create a new server instance.
+ *
+ * @author David Jessup
  */
 public class App {
 
@@ -49,14 +51,20 @@ public class App {
 
 		List<RequestHandler> requestHandlers = Arrays.asList(serverInfoHandler, docrootHandler);
 
-		// Start the web server
+		// Create the server
 		Server server = new WebServer(port, timeout, maxThreads, requestHandlers);
+
+		// Register a shutdown hook to gracefully stop the server when the JVM is terminated
+		Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(server)));
+
+		// Start the server
 		server.start();
 	}
 
 	/**
 	 * Displays usage information
 	 */
+	// CHECKSTYLE:OFF - Allow use of System.out to display CLI usage
 	private static void printUsage() {
 		System.out.println("Java Web Server");
 		System.out.println("---------------");
@@ -70,6 +78,31 @@ public class App {
 			new CommandLineOptions().printHelpOn(System.out);
 		} catch (IOException e) {
 			LOG.error("Unable to display help/usage information", e);
+		}
+	}
+	//CHECKSTYLE:ON
+
+	/**
+	 * The ShutdownHook is registered to run when the JVM is terminated so the server can be terminated gracefully and
+	 * in-progress requests can be completed.
+	 */
+	private static class ShutdownHook implements Runnable {
+
+		private static final Logger LOG = LoggerFactory.getLogger(ShutdownHook.class);
+
+		private Server server;
+
+		ShutdownHook(Server server) {
+			this.server = server;
+		}
+
+		@Override
+		public void run() {
+			if (server.running()) {
+				server.stop();
+			} else {
+				LOG.debug("Server not running, nothing to do.");
+			}
 		}
 	}
 

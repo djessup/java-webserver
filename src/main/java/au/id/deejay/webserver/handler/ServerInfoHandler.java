@@ -2,7 +2,7 @@ package au.id.deejay.webserver.handler;
 
 import au.id.deejay.webserver.response.HttpResponse;
 import au.id.deejay.webserver.response.HttpStatus;
-import au.id.deejay.webserver.spi.HttpMethod;
+import au.id.deejay.webserver.request.HttpMethod;
 import au.id.deejay.webserver.spi.Request;
 import au.id.deejay.webserver.spi.RequestHandler;
 import au.id.deejay.webserver.spi.Response;

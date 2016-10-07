@@ -1,6 +1,5 @@
-package au.id.deejay.webserver.impl;
+package au.id.deejay.webserver.server;
 
-import au.id.deejay.webserver.request.RequestFactory;
 import au.id.deejay.webserver.response.ResponseFactory;
 import au.id.deejay.webserver.spi.RequestHandler;
 import au.id.deejay.webserver.spi.Server;
@@ -27,6 +26,9 @@ public class WebServer implements Server {
 	private Thread executorThread;
 
 	/**
+	 * Creates a WebServer instance on the port specified. It will use a pool of up to <code>maxThreads</code> workers
+	 * to handle incoming requests.
+	 *
 	 * @param port            The port number to bind the server to.
 	 * @param timeout         Request timeout (in seconds). Requests which take longer than this will be terminated.
 	 * @param maxThreads      The maximum number of worker threads to use for servicing requests.
@@ -34,6 +36,8 @@ public class WebServer implements Server {
 	 *                        priority of the handlers (handlers appearing first will be given first opportunity to
 	 *                        handle requests).
 	 * @throws IllegalArgumentException if the port number is outside the valid range (i.e. 0-65535)
+	 * @throws IllegalArgumentException if maxThreads is less than 1
+	 * @throws IllegalArgumentException if no {@link RequestHandler}s are provided
 	 */
 	public WebServer(int port, int timeout, int maxThreads, List<RequestHandler> requestHandlers) {
 
@@ -41,7 +45,7 @@ public class WebServer implements Server {
 			throw new IllegalArgumentException("Port must be in the range 0-65535.");
 		}
 
-		if (maxThreads <= 0) {
+		if (maxThreads < 1) {
 			throw new IllegalArgumentException("Max threads must be greater than zero.");
 		}
 
@@ -64,10 +68,9 @@ public class WebServer implements Server {
 
 		LOG.info("Starting web server on port {} with {} worker threads.", port, maxThreads);
 
-		RequestFactory requestFactory = new RequestFactory();
 		ResponseFactory responseFactory = new ResponseFactory(requestHandlers);
 
-		executor = new WebServerExecutor(port, timeout, maxThreads, requestFactory, responseFactory);
+		executor = new WebServerExecutor(port, timeout, maxThreads, responseFactory);
 
 		executorThread = new Thread(executor);
 		executorThread.start();

@@ -1,6 +1,5 @@
 package au.id.deejay.webserver.request;
 
-import au.id.deejay.webserver.spi.HttpMethod;
 import org.junit.Test;
 
 import java.net.URI;

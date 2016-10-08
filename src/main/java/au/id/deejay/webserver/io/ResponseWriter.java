@@ -52,6 +52,7 @@ public class ResponseWriter extends Writer {
 	private void writeBody(Response response) throws IOException {
 		InputStream responseStream = response.stream();
 		IOUtils.copy(responseStream, outputStream);
+		// FIXME: Should the stream be closed here, or by the user?
 		responseStream.close();
 	}
 

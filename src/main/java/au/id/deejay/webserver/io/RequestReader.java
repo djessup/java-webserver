@@ -8,6 +8,7 @@ import au.id.deejay.webserver.headers.Header;
 import au.id.deejay.webserver.headers.Headers;
 import au.id.deejay.webserver.request.HttpRequest;
 import au.id.deejay.webserver.request.RequestLine;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,14 +66,7 @@ public class RequestReader extends Reader {
 		if (inputReader.ready()) {
 			String line = inputReader.readLine();
 			while (line != null && !"".equals(line)) {
-
-				try {
-					Header header = parseHeaderLine(line);
-					headers.add(header);
-				} catch (IllegalArgumentException e) {
-					LOG.warn("Unable to parse request header, it will be ignored and remaining headers will be processed.", e);
-				}
-
+				headers.add(parseHeaderLine(line));
 				line = inputReader.readLine();
 			}
 		}
@@ -81,17 +75,7 @@ public class RequestReader extends Reader {
 	}
 
 	private String readBody(BufferedReader inputReader) throws IOException {
-		StringBuilder requestBody = new StringBuilder();
-
-		if (inputReader.ready()) {
-			String line = inputReader.readLine();
-			while (line != null && !"".equals(line)) {
-				requestBody.append(line)
-						.append("\n");
-			}
-		}
-
-		return requestBody.toString();
+		return IOUtils.toString(inputReader);
 	}
 
 	private Header parseHeaderLine(String line) {

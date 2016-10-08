@@ -74,7 +74,7 @@ public interface Header {
 	/**
 	 * Removes a named value from the header.
 	 *
-	 * @param value
+	 * @param value the value to remove
 	 * @return Returns the header instance for method chaining.
 	 */
 	@Nonnull

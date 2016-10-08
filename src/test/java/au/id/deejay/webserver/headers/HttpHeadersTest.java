@@ -206,7 +206,7 @@ public class HttpHeadersTest {
 	public void testToString() throws Exception {
 		withHeaders();
 
-		assertThat(headers.toString(), is(equalTo("Test: value1,value2\nOther: value\n")));
+		assertThat(headers.toString(), is(equalTo("Test: value1,value2\r\nOther: value\r\n")));
 	}
 
 	@Test

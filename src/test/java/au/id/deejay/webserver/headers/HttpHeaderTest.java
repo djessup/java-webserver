@@ -6,10 +6,8 @@ import org.mockito.internal.util.collections.Sets;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author David Jessup
@@ -173,4 +171,59 @@ public class HttpHeaderTest {
 		assertThat(header.toString(), is(equalTo("Test: ")));
 	}
 
+	@SuppressWarnings("EqualsBetweenInconvertibleTypes")
+	@Test
+	public void testSimpleEquals() throws Exception {
+		header = new HttpHeader("Test", "value1", "value2");
+		
+		assertThat(header.equals(new HttpHeader("Test", "value1", "value2")), is(true));
+		assertThat(header.equals(new HttpHeader("Other", "value1", "value2")), is(false));
+		assertThat(header.equals("Not a Header object"), is(false));
+	}
+
+	@Test
+	public void testEqualsMatchesOtherInterfaceImplementations() throws Exception {
+		header = new HttpHeader("Test", "value1", "value2");
+		
+		assertThat(header.equals(new UnmodifiableHttpHeader(new HttpHeader("Test", "value1", "value2"))), is(true));
+	}
+
+	@Test
+	public void testEqualsIgnoresCaseOfName() throws Exception {
+		header = new HttpHeader("Test", "value1", "value2");
+
+		assertThat(header.equals(new HttpHeader("TEST", "value1", "value2")), is(true));
+	}
+
+	@Test
+	public void testEqualsIgnoresOrderOfValues() throws Exception {
+		header = new HttpHeader("Test", "value1", "value2");
+
+		assertThat(header.equals(new HttpHeader("Test", "value2", "value1")), is(true));
+	}
+
+	@Test
+	public void testSimpleHashCode() throws Exception {
+		Header header1 = new HttpHeader("Test", "value1", "value2");
+		Header header2 = new HttpHeader("Test", "value1", "value2");
+
+		assertThat(header1.hashCode(), is(equalTo(header2.hashCode())));
+		assertThat(header1.hashCode(), is(not(equalTo(new HttpHeader("Other", "value1", "value2")))));
+	}
+
+	@Test
+	public void testHashCodeWithDifferentCaseNames() throws Exception {
+		Header header1 = new HttpHeader("Test", "value1", "value2");
+		Header header2 = new HttpHeader("TEST", "value1", "value2");
+
+		assertThat(header1.hashCode(), is(equalTo(header2.hashCode())));
+	}
+
+	@Test
+	public void testHashCodeWithDifferentOrderValues() throws Exception {
+		Header header1 = new HttpHeader("Test", "value1", "value2");
+		Header header2 = new HttpHeader("Test", "value2", "value1");
+
+		assertThat(header1.hashCode(), is(equalTo(header2.hashCode())));
+	}
 }

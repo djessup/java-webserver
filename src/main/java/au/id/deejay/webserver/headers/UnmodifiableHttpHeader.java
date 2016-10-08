@@ -63,8 +63,20 @@ public class UnmodifiableHttpHeader implements Header {
 		throw new UnsupportedOperationException();
 	}
 
+	@Nonnull
 	@Override
 	public String toString() {
 		return origin.toString();
+	}
+
+	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+	@Override
+	public boolean equals(Object obj) {
+		return origin.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return origin.hashCode();
 	}
 }

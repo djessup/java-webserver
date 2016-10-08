@@ -7,5 +7,5 @@ public class MessageConstants {
 
 	private MessageConstants() {}
 
-	public static final String CRLF = "\n";
+	public static final String CRLF = "\r\n";
 }

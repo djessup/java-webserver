@@ -79,4 +79,13 @@ public interface Header {
 	 */
 	@Nonnull
 	Header remove(String value);
+
+	/**
+	 * Returns the header in string form, formatted as per RFC2616 - i.e. "Header-Name: value,other-value";
+	 *
+	 * @return Returns the header in string form.
+	 */
+	@Nonnull
+	@Override
+	String toString();
 }

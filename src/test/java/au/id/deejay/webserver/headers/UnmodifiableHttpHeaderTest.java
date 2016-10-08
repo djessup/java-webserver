@@ -78,6 +78,23 @@ public class UnmodifiableHttpHeaderTest {
 		assertThat(header.toString(), is(equalTo("Test: value")));
 	}
 
+	@Test
+	public void testEquals() throws Exception {
+		withTestHeader();
+
+		assertThat(header.equals(new HttpHeader("Test", "value")), is(true));
+		assertThat(header.equals(new HttpHeader("TEST", "value")), is(true));
+		assertThat(header.equals(new UnmodifiableHttpHeader(new HttpHeader("Test", "value"))), is(true));
+	}
+
+	@Test
+	public void testHashCode() throws Exception {
+		Header header1 = new UnmodifiableHttpHeader(new HttpHeader("Test", "value1", "value2"));
+		Header header2 = new UnmodifiableHttpHeader(new HttpHeader("Test", "value1", "value2"));
+
+		assertThat(header1.hashCode(), is(equalTo(header2.hashCode())));
+	}
+
 	private void withTestHeader() {
 		header = new UnmodifiableHttpHeader(new HttpHeader("Test", "value"));
 	}

@@ -36,7 +36,7 @@ java -jar java-webserver.jar
 ```
 This will start the server using the default settings, with a randomly assigned available port, a connection timeout of 10 seconds, up to 20 worker threads, and a document root at `./docroot`.
 
-With the server running you can browse the 
+With the server running you can browse the docroot by visiting `http://localhost:<port>/` or see an overview of the current configuration at `http://localhost:<port>/serverInfo`.
 
 
 You can configure the port, timeout, worker threads and other settings with the corresponding option. For example, to run the server on port 80 with a document root at `/var/www/html` you would use the following:

@@ -38,16 +38,27 @@ public class RequestReader extends Reader {
 		inputStream.close();
 	}
 
+	/**
+	 * Reads data from the input stream into a {@link Request} object.
+	 *
+	 * @return Returns the Request object read from the stream.
+	 * @throws RequestException if there was a problem reading or decoding the request from the input stream.
+	 */
 	public Request readRequest() {
 		BufferedReader inputReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		try {
 			RequestLine requestLine = readRequestLine(inputReader);
 			Headers headers = readHeaders(inputReader);
-			String body = readBody(inputReader);
+
+			// FIXME: Full entity-body support as per RFC2616.
+			String body = "";
+			if (headers.contains("Content-length") || headers.contains("Transfer-Encoding")) {
+				body = readBody(inputReader);
+			}
 
 			return new HttpRequest(requestLine, headers, body);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RequestException("Unable to parse input stream into a Request object.", e);
 		}
 	}
@@ -87,7 +98,7 @@ public class RequestReader extends Reader {
 
 		String name = line.substring(0, splitPos).trim();
 		String[] values = line.substring(splitPos + 1, line.length())
-				.split(",");
+			.split(",");
 
 		for (int i = 0; i < values.length; i++) {
 			values[i] = values[i].trim();

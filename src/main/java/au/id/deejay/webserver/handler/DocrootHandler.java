@@ -1,13 +1,13 @@
 package au.id.deejay.webserver.handler;
 
-import au.id.deejay.webserver.api.RequestHandler;
 import au.id.deejay.webserver.api.HttpMethod;
-import au.id.deejay.webserver.response.RedirectResponse;
+import au.id.deejay.webserver.api.Request;
+import au.id.deejay.webserver.api.RequestHandler;
+import au.id.deejay.webserver.api.Response;
 import au.id.deejay.webserver.response.DirectoryListingResponse;
 import au.id.deejay.webserver.response.ErrorResponse;
 import au.id.deejay.webserver.response.FileResponse;
-import au.id.deejay.webserver.api.Request;
-import au.id.deejay.webserver.api.Response;
+import au.id.deejay.webserver.response.RedirectResponse;
 
 import java.io.File;
 
@@ -44,9 +44,14 @@ public class DocrootHandler implements RequestHandler {
 	public Response handle(Request request) {
 		File file = child(request.uri().getPath());
 
+		// FIXME: Refactor to reduce cyclomatic complexity
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				if (request.uri().toString().endsWith("/")) {
+					File indexFile = new File(file, "index.html");
+					if (indexFile.exists()) {
+						return new FileResponse(indexFile, request.version());
+					}
 					// Show a directory listing
 					return new DirectoryListingResponse(file, request.version());
 				} else {

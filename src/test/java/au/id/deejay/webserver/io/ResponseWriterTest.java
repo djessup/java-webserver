@@ -1,5 +1,6 @@
 package au.id.deejay.webserver.io;
 
+import au.id.deejay.webserver.StringCollectorOutputStream;
 import au.id.deejay.webserver.api.HttpStatus;
 import au.id.deejay.webserver.api.HttpVersion;
 import au.id.deejay.webserver.api.Response;
@@ -87,23 +88,6 @@ public class ResponseWriterTest {
 		when(response.headers()).thenReturn(new HttpHeaders(new HttpHeader("Content-type", "text/plain")));
 		when(response.version()).thenReturn(HttpVersion.HTTP_1_1);
 		when(response.stream()).thenReturn(new ByteArrayInputStream("Hello world!".getBytes(UTF_8)));
-	}
-
-	/**
-	 * An OutputStream captures characters written to it so they can be retrieved later for testing purposes.
-	 */
-	private class StringCollectorOutputStream extends OutputStream {
-
-		private StringBuilder content = new StringBuilder();
-
-		@Override
-		public void write(int x) throws IOException {
-			content.append((char) x );
-		}
-
-		public String toString(){
-			return content.toString();
-		}
 	}
 
 	/**

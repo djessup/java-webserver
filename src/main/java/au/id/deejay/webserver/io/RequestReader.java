@@ -2,10 +2,10 @@ package au.id.deejay.webserver.io;
 
 import au.id.deejay.webserver.api.Request;
 import au.id.deejay.webserver.exception.RequestException;
-import au.id.deejay.webserver.headers.HttpHeader;
-import au.id.deejay.webserver.headers.HttpHeaders;
 import au.id.deejay.webserver.headers.Header;
 import au.id.deejay.webserver.headers.Headers;
+import au.id.deejay.webserver.headers.HttpHeader;
+import au.id.deejay.webserver.headers.HttpHeaders;
 import au.id.deejay.webserver.request.HttpRequest;
 import au.id.deejay.webserver.request.RequestLine;
 import org.apache.commons.io.IOUtils;
@@ -67,9 +67,7 @@ public class RequestReader extends Reader {
 		return new RequestLine(inputReader.readLine());
 	}
 
-	/**
-	 * TODO: support multi-line header values (additional lines start with a space or tab character)
-	 */
+	// TODO: support multi-line header values (additional lines start with a space or tab character)
 	private Headers readHeaders(BufferedReader inputReader) throws IOException {
 		Headers headers = new HttpHeaders();
 

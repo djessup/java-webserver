@@ -56,6 +56,9 @@ public class WebServer {
 		this.timeout = timeout;
 		this.maxThreads = maxThreads;
 		this.requestHandlers = requestHandlers;
+
+		ResponseFactory responseFactory = new ResponseFactory(requestHandlers);
+		this.executor = new WebServerExecutor(port, timeout, maxThreads, responseFactory);
 	}
 
 	/**
@@ -69,11 +72,7 @@ public class WebServer {
 			throw new IllegalStateException("Server is already running.");
 		}
 
-		LOG.info("Starting web server on port {} with {} worker threads.", port, maxThreads);
-
-		ResponseFactory responseFactory = new ResponseFactory(requestHandlers);
-
-		executor = new WebServerExecutor(port, timeout, maxThreads, responseFactory);
+		LOG.info("Starting web server on {} with {} worker threads.", port == 0 ? "dynamically allocated port" : "port " + port, maxThreads);
 
 		executorThread = new Thread(executor);
 		executorThread.start();

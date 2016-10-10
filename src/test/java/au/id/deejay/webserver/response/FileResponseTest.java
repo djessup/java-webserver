@@ -8,14 +8,14 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author David Jessup
@@ -36,9 +36,24 @@ public class FileResponseTest {
 	}
 
 	@Test(expected = ResponseException.class)
-	public void testMissingFileStreamThrowsException() throws Exception {
+	public void testMissingFileThrowsException() throws Exception {
 		file = new File("/not/a/file");
 		withResponse();
+	}
+
+	@Test(expected = ResponseException.class)
+	public void testMissingFileStreamThrowsException() throws Exception {
+		withIndexFile();
+		withResponse();
+
+		// Simulate the file being removed in between the request construction and stream call with a
+		// FileNotFoundException. This will propogate via the FileInputStream constructor, where the real exception
+		// would be emitted from in a real-world situation.
+
+		// Simply using an invalid path won't work because the FileResponse constructor will throw an exception before
+		// stream() can be called.
+
+		doThrow(FileNotFoundException.class).when(file).getPath();
 
 		response.stream();
 	}
@@ -63,10 +78,11 @@ public class FileResponseTest {
 
 	@Test(expected = ResponseException.class)
 	public void testUndetectableContentTypeThrowException() throws Exception {
-		file = mock(File.class);
-		// this is a bit of a cludge to simulate this test condition, but since statics cannot be mocked there aren't
-		// many options!
-		when(file.toPath()).thenThrow(IOException.class);
+		withIndexFile();
+
+		// Another cludged exception to simulate a real-world error state when attempting to determine the MIME type of
+		// a file.
+		when(file.toURI()).thenThrow(IOException.class);
 
 		withResponse();
 	}
@@ -83,7 +99,7 @@ public class FileResponseTest {
 	}
 
 	private void withIndexFile() throws Exception {
-		file = getDocrootFile("/index.html");
+		file = spy(getDocrootFile("/index.html"));
 	}
 
 	private void withResponse() throws Exception {

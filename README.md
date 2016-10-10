@@ -1,12 +1,12 @@
-= Java Web Server
+# Java Web Server
 
 A simple multi-threaded web server written in Java and implementing the HTTP/1.1 specification.
 
-== Requirements
+##Requirements
 
 * Java 8
 
-== Building
+## Building
 
 Run the Maven `package` goal:
 
@@ -14,7 +14,7 @@ Run the Maven `package` goal:
 
 This will produce an executable JAR in the `target` directory.
 
-== Usage
+## Usage
 
 Start the server with default settings:
 
@@ -32,6 +32,6 @@ Display all options and usage information:
 
 `java -jar java-webserver.jar --help`
 
-== Acknowledgements
+## Acknowledgements
 
 * Favicon courtesy of [FamFamFam Silk icons collection](http://www.famfamfam.com/lab/icons/silk/), licensed under Creative Commons Attribution 3.0 License

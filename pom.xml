@@ -200,6 +200,13 @@
             <version>3.4</version>
         </dependency>
 
+        <!-- Content-type detection -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>1.7</version>
+        </dependency>
+
     </dependencies>
 
 </project>

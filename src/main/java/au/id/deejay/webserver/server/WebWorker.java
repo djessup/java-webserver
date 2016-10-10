@@ -63,7 +63,7 @@ public class WebWorker implements Runnable {
 		RequestReader requestReader = new RequestReader(inputStream);
 		ResponseWriter responseWriter = new ResponseWriter(outputStream);
 
-		while (persistConnection()) {
+//		while (persistConnection()) {
 
 			Request request;
 			Response response;
@@ -85,7 +85,7 @@ public class WebWorker implements Runnable {
 			}
 
 			writeResponse(responseWriter, response);
-		}
+//		}
 	}
 
 	private Request readRequest(RequestReader requestReader) {

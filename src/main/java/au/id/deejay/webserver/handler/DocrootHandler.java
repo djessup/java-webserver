@@ -50,6 +50,7 @@ public class DocrootHandler implements RequestHandler {
 				if (request.uri().toString().endsWith("/")) {
 					File indexFile = new File(file, "index.html");
 					if (indexFile.exists()) {
+						// Serve index file
 						return new FileResponse(indexFile, request.version());
 					}
 					// Show a directory listing

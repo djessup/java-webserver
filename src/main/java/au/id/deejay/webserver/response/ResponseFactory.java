@@ -46,6 +46,7 @@ public class ResponseFactory {
 			for (RequestHandler handler : requestHandlers) {
 				if (handler.canHandle(request)) {
 					response = handler.handle(request);
+					break;
 				}
 			}
 		} catch (Exception e) {

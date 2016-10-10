@@ -31,22 +31,28 @@ public class ResponseFactoryTest {
 	private RequestHandler handler2;
 
 	@Mock
+	private RequestHandler handler3;
+
+	@Mock
 	private Request request;
 
 	@Test
-	public void testResponse() throws Exception {
+	public void testResponseHandlersAreAskedToHandleInOrder() throws Exception {
 		withResponseFactory();
 
 		when(handler1.canHandle(any())).thenReturn(false);
 		when(handler2.canHandle(any())).thenReturn(true);
+		when(handler3.canHandle(any())).thenReturn(true);
 
 		Response response = responseFactory.response(request);
 
 		verify(handler1).canHandle(request);
 		verify(handler2).canHandle(request);
+		verify(handler3, never()).canHandle(request);
 
 		verify(handler1, never()).handle(request);
 		verify(handler2).handle(request);
+		verify(handler3, never()).handle(request);
 	}
 
 	@Test
@@ -54,6 +60,7 @@ public class ResponseFactoryTest {
 		withResponseFactory();
 		when(handler1.canHandle(any())).thenReturn(false);
 		when(handler2.canHandle(any())).thenReturn(false);
+		when(handler3.canHandle(any())).thenReturn(false);
 
 		Response response = responseFactory.response(request);
 

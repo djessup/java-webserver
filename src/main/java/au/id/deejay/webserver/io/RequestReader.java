@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -44,7 +45,7 @@ public class RequestReader extends Reader {
 	 * @return Returns the Request object read from the stream.
 	 * @throws RequestException if there was a problem reading or decoding the request from the input stream.
 	 */
-	public Request readRequest() {
+	public Request readRequest() throws SocketTimeoutException {
 		BufferedReader inputReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		try {
@@ -58,6 +59,8 @@ public class RequestReader extends Reader {
 			}
 
 			return new HttpRequest(requestLine, headers, body);
+		} catch (SocketTimeoutException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new RequestException("Unable to parse input stream into a Request object.", e);
 		}

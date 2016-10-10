@@ -1,5 +1,6 @@
 package au.id.deejay.webserver.server;
 
+import au.id.deejay.webserver.api.HttpMessage;
 import au.id.deejay.webserver.api.HttpVersion;
 import au.id.deejay.webserver.api.Request;
 import au.id.deejay.webserver.api.Response;
@@ -16,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.List;
 
 /**
  * @author David Jessup
@@ -28,12 +31,12 @@ public class WebWorker implements Runnable {
 
 	private final Socket client;
 	private final ResponseFactory responseFactory;
-	private boolean persistConnection = false;
+	private boolean keepAlive = false;
 
 	public WebWorker(Socket client, ResponseFactory responseFactory) {
 		this.client = client;
 		this.responseFactory = responseFactory;
-		this.persistConnection = true;
+		this.keepAlive = true;
 	}
 
 	@Override
@@ -56,56 +59,61 @@ public class WebWorker implements Runnable {
 			outputStream = client.getOutputStream();
 		} catch (IOException e) {
 			LOG.error("Failed to acquire I/O streams from client connection", e);
-			closeConnection();
 			return;
 		}
 
 		RequestReader requestReader = new RequestReader(inputStream);
 		ResponseWriter responseWriter = new ResponseWriter(outputStream);
 
-//		while (persistConnection()) {
+		while (isKeepAliveConnection()) {
 
 			Request request;
 			Response response;
 
 			try {
-				request = readRequest(requestReader);
+				// Read in the request and update the thread's keep-alive status
+				request = requestReader.readRequest();
+				keepAliveConnection(shouldKeepAlive(request));
+
 				response = generateResponse(request);
+
+				// Log the request
+				LOG.info("({}) - \"{} {} {}\" {} {}",
+						 client.getRemoteSocketAddress(),
+						 request.method(),
+						 request.uri(),
+						 request.version(),
+						 response.status().code(),
+						 response.headers().value("Content-length"));
+
 			} catch (RequestException e) {
-				LOG.info("Bad request from " + client.getRemoteSocketAddress().toString(), e);
+				LOG.error("Bad request from " + client.getRemoteSocketAddress(), e);
 				response = ErrorResponse.BAD_REQUEST_400;
+			} catch (SocketTimeoutException e) {
+				// Allow the connection to drop
+				return;
 			}
 
-			// Check if the response is forcing the connection closed, or if it's an error response close it anyway
-			if (persistConnection()
-				&& (response.headers().contains(CONNECTION_HEADER)
-				&& response.headers().values(CONNECTION_HEADER).contains("close"))
-				|| response instanceof ErrorResponse) {
-				persistConnection(false);
+			// If the client has requested keep-alive, check that the response hasn't overridden it
+			if (isKeepAliveConnection()) {
+				keepAliveConnection(shouldKeepAlive(response));
 			}
 
 			writeResponse(responseWriter, response);
-//		}
+		}
 	}
 
-	private Request readRequest(RequestReader requestReader) {
-		Request request = requestReader.readRequest();
-
-		// Use persistent connections if requested, or by default for HTTP/1.1+
-		if (HttpVersion.HTTP_1_1.compareTo(request.version()) >= 0
-			|| (
-			request.headers().contains(CONNECTION_HEADER)
-				&& request.headers().values(CONNECTION_HEADER).contains("keep-alive"))) {
-			persistConnection(true);
+	private boolean shouldKeepAlive(HttpMessage message) {
+		List<String> connectionValues = message.headers().values(CONNECTION_HEADER);
+		if (connectionValues != null) {
+			if (connectionValues.contains("keep-alive")) {
+				return true;
+			} else if (connectionValues.contains("close")) {
+				return false;
+			}
 		}
 
-		// Never use persistent connections if explicitly disabled
-		if (request.headers().contains(CONNECTION_HEADER)
-			&& request.headers().values(CONNECTION_HEADER).contains("close")) {
-			persistConnection(false);
-		}
-
-		return request;
+		return HttpVersion.HTTP_1_1.compareTo(message.version()) <= 0;
 	}
 
 	private Response generateResponse(Request request) {
@@ -117,12 +125,12 @@ public class WebWorker implements Runnable {
 		}
 	}
 
-	private boolean persistConnection() {
-		return persistConnection;
+	private boolean isKeepAliveConnection() {
+		return keepAlive;
 	}
 
-	private void persistConnection(boolean persistConnection) {
-		this.persistConnection = persistConnection;
+	private void keepAliveConnection(boolean keepAlive) {
+		this.keepAlive = keepAlive;
 	}
 
 	private void writeResponse(ResponseWriter responseWriter, Response response) {

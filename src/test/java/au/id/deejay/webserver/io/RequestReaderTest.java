@@ -4,7 +4,6 @@ import au.id.deejay.webserver.api.HttpMethod;
 import au.id.deejay.webserver.api.HttpVersion;
 import au.id.deejay.webserver.api.Request;
 import au.id.deejay.webserver.exception.RequestException;
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -48,11 +47,10 @@ public class RequestReaderTest {
 	}
 
 	@Test
-	public void testReadValidRequest() throws Exception {
+	public void testReadValidRequestWithoutEntityBody() throws Exception {
 		String rawRequest = "GET /index.html HTTP/1.1" + CRLF
 				+ "Connection: keep-alive" + CRLF
-				+ CRLF
-				+ "Request-body";
+				+ CRLF;
 
 		InputStream inputStream = new ByteArrayInputStream(rawRequest.getBytes(UTF_8));
 
@@ -63,7 +61,6 @@ public class RequestReaderTest {
 		assertThat(request.method(), is(HttpMethod.GET));
 		assertThat(request.uri(), is(equalTo(new URI("/index.html"))));
 		assertThat(request.version(), is(HttpVersion.HTTP_1_1));
-		assertThat(IOUtils.contentEquals(request.stream(), new ByteArrayInputStream("Request-body".getBytes(UTF_8))), is(true));
 	}
 
 	@Test(expected = RequestException.class)

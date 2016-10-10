@@ -58,7 +58,7 @@ public class RequestReader extends Reader {
 			}
 
 			return new HttpRequest(requestLine, headers, body);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RequestException("Unable to parse input stream into a Request object.", e);
 		}
 	}

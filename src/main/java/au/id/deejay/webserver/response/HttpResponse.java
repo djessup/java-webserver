@@ -2,6 +2,7 @@ package au.id.deejay.webserver.response;
 
 import au.id.deejay.webserver.api.HttpStatus;
 import au.id.deejay.webserver.api.Response;
+import au.id.deejay.webserver.headers.HttpHeader;
 import au.id.deejay.webserver.headers.HttpHeaders;
 import au.id.deejay.webserver.api.HttpVersion;
 import au.id.deejay.webserver.headers.Headers;
@@ -25,7 +26,7 @@ public class HttpResponse implements Response {
 	}
 
 	public HttpResponse(HttpStatus status, String body, HttpVersion version) {
-		this(status, new HttpHeaders(), body, version);
+		this(status, new HttpHeaders(new HttpHeader("Content-length", String.valueOf(body.length()))), body, version);
 	}
 
 	public HttpResponse(HttpStatus status, Headers headers, String body, HttpVersion version) {

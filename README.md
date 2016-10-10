@@ -34,4 +34,5 @@ Display all options and usage information:
 
 ## Acknowledgements
 
+* Sample content courtesy of [Twitter Bootstrap](https://getbootstrap.com), licensed under The MIT License.
 * Favicon courtesy of [FamFamFam Silk icons collection](http://www.famfamfam.com/lab/icons/silk/), licensed under Creative Commons Attribution 3.0 License

@@ -2,6 +2,8 @@ package au.id.deejay.webserver.handler;
 
 import au.id.deejay.webserver.api.RequestHandler;
 import au.id.deejay.webserver.api.HttpMethod;
+import au.id.deejay.webserver.response.RedirectResponse;
+import au.id.deejay.webserver.response.DirectoryListingResponse;
 import au.id.deejay.webserver.response.ErrorResponse;
 import au.id.deejay.webserver.response.FileResponse;
 import au.id.deejay.webserver.api.Request;
@@ -43,7 +45,18 @@ public class DocrootHandler implements RequestHandler {
 		File file = child(request.uri().getPath());
 
 		if (file.exists()) {
-			return new FileResponse(file, request.version());
+			if (file.isDirectory()) {
+				if (request.uri().toString().endsWith("/")) {
+					// Show a directory listing
+					return new DirectoryListingResponse(file, request.version());
+				} else {
+					// Request is to a directory without a trailing slash, forward to the correct location.
+					return new RedirectResponse(request.uri().toString() + "/", request.version());
+				}
+			} else {
+				// Send the file
+				return new FileResponse(file, request.version());
+			}
 		}
 
 		return ErrorResponse.NOT_FOUND_404;

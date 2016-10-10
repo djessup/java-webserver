@@ -6,6 +6,7 @@ package au.id.deejay.webserver.exception;
 public class ResponseException extends RuntimeException {
 
 	public ResponseException() {
+		super();
 	}
 
 	public ResponseException(String message) {

@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,12 +30,12 @@ public class DocrootHandlerTest {
 
 	@Test(expected = IllegalStateException.class)
 	public void testUnreadableDocroot() throws Exception {
-		new DocrootHandler("/not/a/real/directory");
+		new DocrootHandler("/not/a/real/directory", null, false);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNonDirectoryDocroot() throws Exception {
-		new DocrootHandler(getDocrootFile("/index.html").getPath());
+		new DocrootHandler(getDocrootFile("/index.html").getPath(), null, false);
 	}
 
 	@Test
@@ -84,7 +85,7 @@ public class DocrootHandlerTest {
 
 	private void withHandler() throws Exception {
 		String docroot = URLDecoder.decode(getClass().getResource("/docroot").getFile(), StandardCharsets.UTF_8.toString());
-		requestHandler = new DocrootHandler(docroot);
+		requestHandler = new DocrootHandler(docroot, Collections.singletonList("index.html"), true);
 	}
 
 	private void withMockGetIndexRequest() throws Exception {

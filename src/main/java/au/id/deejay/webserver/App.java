@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class App {
 
 		// Configure request handlers
 		RequestHandler serverInfoHandler = new ServerInfoHandler(port, timeout, maxThreads, docroot, System.currentTimeMillis());
-		RequestHandler docrootHandler = new DocrootHandler(docroot);
+		RequestHandler docrootHandler = new DocrootHandler(docroot, Collections.singletonList("index.html"), true);
 
 		List<RequestHandler> requestHandlers = Arrays.asList(serverInfoHandler, docrootHandler);
 

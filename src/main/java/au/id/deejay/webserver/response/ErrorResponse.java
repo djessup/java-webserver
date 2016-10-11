@@ -14,6 +14,7 @@ import java.text.MessageFormat;
 public class ErrorResponse extends HttpResponse {
 
 	public static final ErrorResponse BAD_REQUEST_400 = new ErrorResponse(HttpStatus.BAD_REQUEST_400, HttpVersion.HTTP_1_0);
+	public static final ErrorResponse FORBIDDEN_403 = new ErrorResponse(HttpStatus.FORBIDDEN_403, HttpVersion.HTTP_1_0);
 	public static final ErrorResponse NOT_FOUND_404 = new ErrorResponse(HttpStatus.NOT_FOUND_404, HttpVersion.HTTP_1_0);
 	public static final ErrorResponse INTERNAL_SERVER_ERROR_500 = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR_500, HttpVersion.HTTP_1_0);
 	public static final ErrorResponse NOT_IMPLEMENTED_501 = new ErrorResponse(HttpStatus.NOT_IMPLEMENTED_501, HttpVersion.HTTP_1_0);

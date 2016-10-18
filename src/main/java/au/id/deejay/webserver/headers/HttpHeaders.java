@@ -9,21 +9,35 @@ import java.util.stream.Collectors;
 import static au.id.deejay.webserver.MessageConstants.CRLF;
 
 /**
+ * A collection of HTTP {@link Header}s.
+ *
  * @author David Jessup
  */
 public class HttpHeaders implements Headers {
 
 	private Map<String, Header> headers;
 
-	public HttpHeaders() {
-		headers = new LinkedHashMap<>();
-	}
-
+	/**
+	 * Creates a collection of {@link Headers} containing the {@link Header}s provided.
+	 *
+	 * @param headers an array of headers to include in the collection
+	 */
 	public HttpHeaders(Header... headers) {
 		this();
 		for (Header header : headers) {
 			add(header);
 		}
+	}
+
+	/**
+	 * Creates a new empty {@link Headers} collection.
+	 */
+	public HttpHeaders() {
+		headers = new LinkedHashMap<>();
+	}
+
+	private Header getModifiableHeader(String key) {
+		return headers.get(key.toLowerCase());
 	}
 
 	@Override
@@ -40,10 +54,6 @@ public class HttpHeaders implements Headers {
 	@Override
 	public String value(String key) {
 		return contains(key) ? getModifiableHeader(key).value() : null;
-	}
-
-	private Header getModifiableHeader(String key) {
-		return headers.get(key.toLowerCase());
 	}
 
 	@CheckForNull
@@ -115,8 +125,8 @@ public class HttpHeaders implements Headers {
 	public List<Header> headers() {
 		return Collections.unmodifiableList(
 				headers.values().stream()
-				.map(UnmodifiableHttpHeader::new)
-				.collect(Collectors.toList())
+						.map(UnmodifiableHttpHeader::new)
+						.collect(Collectors.toList())
 		);
 	}
 
@@ -124,6 +134,17 @@ public class HttpHeaders implements Headers {
 	@Override
 	public Set<String> names() {
 		return Collections.unmodifiableSet(headers.keySet());
+	}
+
+	@Override
+	public int hashCode() {
+		return headers().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof Headers
+				&& headers().equals(((Headers) obj).headers());
 	}
 
 	@Nonnull
@@ -135,16 +156,5 @@ public class HttpHeaders implements Headers {
 					.append(CRLF);
 		}
 		return output.toString();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof Headers
-				&& headers().equals(((Headers) obj).headers());
-	}
-
-	@Override
-	public int hashCode() {
-		return headers().hashCode();
 	}
 }

@@ -159,7 +159,6 @@ public interface Headers {
 	 * </pre>
 	 * <p>
 	 * would return:
-	 * <p>
 	 * <pre>
 	 *     Content-type: text/html
 	 *     Content-length: 1234

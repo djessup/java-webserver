@@ -43,7 +43,10 @@ public class RequestReader extends Reader {
 	 * Reads data from the input stream into a {@link Request} object.
 	 *
 	 * @return Returns the Request object read from the stream.
-	 * @throws RequestException if there was a problem reading or decoding the request from the input stream.
+	 * @throws RequestException       if there was a problem reading or decoding the request from the input stream.
+	 * @throws SocketTimeoutException if the socket connection times out while waiting for data. This can happen as
+	 *                                part of normal operation when reading from a "keep-alive" connection, or due to
+	 *                                abnormal conditions like a broken network connection.
 	 */
 	public Request readRequest() throws SocketTimeoutException {
 		BufferedReader inputReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -99,7 +102,7 @@ public class RequestReader extends Reader {
 
 		String name = line.substring(0, splitPos).trim();
 		String[] values = line.substring(splitPos + 1, line.length())
-			.split(",");
+				.split(",");
 
 		for (int i = 0; i < values.length; i++) {
 			values[i] = values[i].trim();

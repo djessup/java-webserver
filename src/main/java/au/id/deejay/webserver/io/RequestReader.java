@@ -15,12 +15,20 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * Reads {@link Request}s from an {@link InputStream}.
+ *
  * @author David Jessup
  */
 public class RequestReader extends Reader {
 
 	private InputStream inputStream;
 
+	/**
+	 * Constructs a new {@link RequestReader} that deserialises the provided {@link InputStream} in {@link Request}
+	 * objects.
+	 *
+	 * @param inputStream the input stream to read requests from
+	 */
 	public RequestReader(InputStream inputStream) {
 		this.inputStream = inputStream;
 	}

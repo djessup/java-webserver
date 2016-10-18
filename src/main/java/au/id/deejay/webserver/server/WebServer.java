@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
+ * The main web server class,
  * @author David Jessup
  */
 public class WebServer {

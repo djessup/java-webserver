@@ -5,6 +5,7 @@ deploy:
   provider: releases
   api_key:
     secure: SVR/zC9jKz/zjlwflX5oPkjIS8DSEPQjHUYJd9KbbmMKlLlWeISBLH6XA1WANdt5bSQ7LvynV44FZX4sdv2WTqAnOR/YdcOJou5c92ZibQTstydmAbLDGCZXLJqeDrSRyOHcxuxtMR7ne1L0xrazwEEamYF/LPvycnoRUXz92fBjKCsiY9vjJ7djwCzsPnDz96/mxo0kcB17GnB3Xhn0d+WOnL6oC/9dBJlLuiXbStrkG7Iwh3ZNopPOwurLspwKs/y/1ofxYJL/kCCmGqundmQwHlRKM2GyqumVOVF3a3BHNfFQXFBC3H+kvtIkvPuWd0oA8LgiLnr9zaf7/im0X/96rd/cj9VAU3fOcqdiDxe3AtnYbmN7AuiAxwuZTkidHB7TjHNb1k2H2/xcl4p6IhmfNM6yFd72xHvMqM6GRTMpcLSiUkL0qU2ok6jvTUF9XGfw/XMzd3nRQdlTjU7UznCDo/GpkGC2gLNUif8ReLfK6Mv6R3qL+5zQs+n5IyjjVMQiUDC9LAt7MnUYLz+ueHkvUOpoY4UvGFNSofyIvvNacU9SKGgWwBRBEGo0LVkomQQ2dzPKFXYBNLHdbDPRoVwsseNMKZKyPpIJ4R97yrYZxhuytFkLnNAWfjsNAVVc/xHQHJmAt1IjWkVSEvKLbWJpe/t/UIdGXtH59y4MKas=
+  skip_cleanup: true
   file:
     - "target/java-webserver-$TRAVIS_TAG.jar"
     - "target/java-webserver-$TRAVIS_TAG-javadoc.jar"

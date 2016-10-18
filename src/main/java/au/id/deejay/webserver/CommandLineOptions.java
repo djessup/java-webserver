@@ -18,7 +18,7 @@ public class CommandLineOptions {
 	/**
 	 * Default port the web server will be bound.
 	 */
-	private static final int DEFAULT_PORT = 8080;
+	private static final int DEFAULT_PORT = 0;
 
 	/**
 	 * Default document root used.

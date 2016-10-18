@@ -38,7 +38,7 @@ Start the server:
 ```bash
 java -jar target/java-webserver-1.0.0.jar
 ```
-This will start the server using the default settings, with a randomly assigned available port, a connection timeout of 10 seconds, up to 20 worker threads, and a document root at `./docroot`.
+This will start the server using the default settings: a randomly assigned available port, a connection timeout of 10 seconds, up to 20 worker threads, and a document root at `./docroot`.
 
 With the server running you can browse the docroot by visiting `http://localhost:<port>/` or see an overview of the current configuration at `http://localhost:<port>/serverInfo`.
 

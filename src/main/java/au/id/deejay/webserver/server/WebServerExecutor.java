@@ -62,6 +62,7 @@ public class WebServerExecutor implements Runnable {
 			while (running()) {
 				handleConnection(serverSocket);
 			}
+
 		} catch (IOException e) {
 			LOG.warn("Error listening for client connection.", e);
 			stop();

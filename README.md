@@ -208,7 +208,7 @@ public class CurrentTimeResponse implements Response {
 }
 ```
 
-Now we'll create a `RequestHandler` to capture requests to `/time` and respond using our new handler:
+Now we'll create a `RequestHandler` to capture requests to `/time` and respond using our new response type:
 
 ```java
 import au.id.deejay.webserver.api.HttpMethod;

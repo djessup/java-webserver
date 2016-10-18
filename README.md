@@ -1,4 +1,8 @@
-# Java Web Server [![Build Status](https://travis-ci.org/djessup/java-webserver.svg?branch=master)](https://travis-ci.org/djessup/java-webserver)
+# Java Web Server 
+
+[![Build Status](https://travis-ci.org/djessup/java-webserver.svg?branch=master)](https://travis-ci.org/djessup/java-webserver)
+[![SonarQube Coverage](https://img.shields.io/sonar/http/sonarqube.com/au.id.deejay:java-webserver/coverage.svg)](https://sonarqube.com/dashboard?id=au.id.deejay%3Ajava-webserver)
+[![Quality Gate](http://sonarqube.com/api/badges/gate?key=au.id.deejay:java-webserver)](https://sonarqube.com/dashboard?id=au.id.deejay%3Ajava-webserver)
 
 A simple multi-threaded web server written in Java and implementing the HTTP/1.1 specification.
 

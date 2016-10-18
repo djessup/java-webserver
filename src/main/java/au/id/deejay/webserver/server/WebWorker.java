@@ -27,7 +27,7 @@ public class WebWorker implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebWorker.class);
 
-	private static String CONNECTION_HEADER = "Connection";
+	private static final String CONNECTION_HEADER = "Connection";
 
 	private final Socket client;
 	private final ResponseFactory responseFactory;
@@ -91,6 +91,7 @@ public class WebWorker implements Runnable {
 				response = ErrorResponse.BAD_REQUEST_400;
 			} catch (SocketTimeoutException e) {
 				// Allow the connection to drop
+				LOG.trace("Client connection timed out", e);
 				return;
 			}
 

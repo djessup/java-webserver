@@ -109,6 +109,7 @@ public class UnmodifiableHttpHeaders implements Headers {
 		return origin.hashCode();
 	}
 
+	@Nonnull
 	@Override
 	public String toString() {
 		return origin.toString();

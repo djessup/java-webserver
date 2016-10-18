@@ -65,6 +65,7 @@ public class App {
 	 * Displays usage information
 	 */
 	// CHECKSTYLE:OFF - Allow use of System.out to display CLI usage
+	@SuppressWarnings("squid:S106")
 	private static void printUsage() {
 		System.out.println("Java Web Server");
 		System.out.println("---------------");

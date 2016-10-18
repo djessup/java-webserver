@@ -32,21 +32,21 @@ public class DirectoryListingResponse extends HttpResponse {
 
 	private String listing() {
 
-		StringBuilder html = new StringBuilder();
+		StringBuilder output = new StringBuilder();
 
-		html.append("<h1>Directory listing for: ")
+		output.append("<h1>Directory listing for: ")
 			.append(directory.getPath())
 			.append("</h1>")
 			.append("<ol>");
 
-		listFile(html, "[ Up ]", "../");
+		listFile(output, "[ Up ]", "../");
 		for (File file : directory.listFiles()) {
-			listFile(html, file.getName(), file.getName() + (file.isDirectory() ? "/" : ""));
+			listFile(output, file.getName(), file.getName() + (file.isDirectory() ? "/" : ""));
 		}
 
-		html.append("</ol>");
+		output.append("</ol>");
 
-		return html.toString();
+		return output.toString();
 	}
 
 	private void listFile(StringBuilder html, String name, String path) {

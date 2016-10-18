@@ -110,23 +110,7 @@ public class DocrootHandler implements RequestHandler {
 
 		if (requestedFile.isDirectory()) {
 
-			// Redirect requests for "/directory" to "/directory/"
-			if (uriDoesNotEndWithSlash(request.uri())) {
-				return new RedirectResponse(request.uri().toString() + "/", request.version());
-			}
-
-			if (indexFilesAreEnabled()) {
-				File indexFile = findIndexFile(requestedFile);
-				if (indexFile != null) {
-					return new FileResponse(indexFile, request.version());
-				}
-			}
-
-			if (allowDirectoryListings) {
-				return new DirectoryListingResponse(requestedFile, request.version());
-			} else {
-				return ErrorResponse.FORBIDDEN_403;
-			}
+			return handleDirectoryRequest(request, requestedFile);
 
 		} else if (requestedFile.isFile()) {
 			// Serve the file
@@ -182,5 +166,25 @@ public class DocrootHandler implements RequestHandler {
 		}
 
 		return null;
+	}
+
+	private Response handleDirectoryRequest(Request request, File requestedFile) {
+		// Redirect requests for "/directory" to "/directory/"
+		if (uriDoesNotEndWithSlash(request.uri())) {
+			return new RedirectResponse(request.uri().toString() + "/", request.version());
+		}
+
+		if (indexFilesAreEnabled()) {
+			File indexFile = findIndexFile(requestedFile);
+			if (indexFile != null) {
+				return new FileResponse(indexFile, request.version());
+			}
+		}
+
+		if (allowDirectoryListings) {
+			return new DirectoryListingResponse(requestedFile, request.version());
+		} else {
+			return ErrorResponse.FORBIDDEN_403;
+		}
 	}
 }

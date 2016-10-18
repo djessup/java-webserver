@@ -37,7 +37,7 @@ public class CommandLineOptionsTest {
 
 		// default
 		options = new CommandLineOptions();
-		assertThat(options.port(), is(equalTo(8080)));
+		assertThat(options.port(), is(equalTo(0)));
 	}
 
 	@Test(expected = OptionException.class)

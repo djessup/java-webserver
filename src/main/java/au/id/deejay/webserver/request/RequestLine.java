@@ -58,18 +58,6 @@ public class RequestLine {
 		httpVersion = new HttpVersion(requestLineParts[2].trim());
 	}
 
-	public HttpMethod method() {
-		return method;
-	}
-
-	public URI uri() {
-		return uri;
-	}
-
-	public HttpVersion version() {
-		return httpVersion;
-	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(method, uri, httpVersion);
@@ -81,5 +69,32 @@ public class RequestLine {
 				&& this.method() == ((RequestLine) obj).method()
 				&& this.uri().equals(((RequestLine) obj).uri())
 				&& this.version().equals(((RequestLine) obj).version());
+	}
+
+	/**
+	 * Gets the HTTP method of the request line.
+	 *
+	 * @return Returns the HTTP method.
+	 */
+	public HttpMethod method() {
+		return method;
+	}
+
+	/**
+	 * Gets the URI of the request line.
+	 *
+	 * @return Returns the URI.
+	 */
+	public URI uri() {
+		return uri;
+	}
+
+	/**
+	 * Gets the HTTP version of the request line.
+	 *
+	 * @return Returns the HTTP version.
+	 */
+	public HttpVersion version() {
+		return httpVersion;
 	}
 }

@@ -34,9 +34,9 @@ public class ServerInfoHandlerTest {
 		assertThat(response.status(), is(HttpStatus.OK_200));
 		assertThat(response.version(), is(equalTo(request.version())));
 		assertThat(responseBody, containsString("/path/to/docroot"));
-		assertThat(responseBody, containsString("port 8080"));
-		assertThat(responseBody, containsString("8 threads"));
-		assertThat(responseBody, containsString("10 seconds"));
+		assertThat(responseBody, containsString("8080"));
+		assertThat(responseBody, containsString("8"));
+		assertThat(responseBody, containsString("10s"));
 	}
 
 	@Test

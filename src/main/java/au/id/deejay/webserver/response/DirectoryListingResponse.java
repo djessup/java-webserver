@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * An HTTP response which lists the contents of a directory.
+ *
  * @author David Jessup
  */
 public class DirectoryListingResponse extends HttpResponse {
@@ -17,6 +19,12 @@ public class DirectoryListingResponse extends HttpResponse {
 	private final File directory;
 	private String html;
 
+	/**
+	 * Creates a new {@link DirectoryListingResponse}.
+	 *
+	 * @param directory the directory which will be listed by the response
+	 * @param version the HTTP version of the response
+	 */
 	public DirectoryListingResponse(File directory, HttpVersion version) {
 		super(HttpStatus.OK_200, version);
 		this.directory = directory;

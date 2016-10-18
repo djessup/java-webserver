@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
+ * A single HTTP header.
+ *
  * @author David Jessup
  */
 public class HttpHeader implements Header {
@@ -14,10 +16,23 @@ public class HttpHeader implements Header {
 	private String name;
 	private List<String> values;
 
+	/**
+	 * Creates a new {@link Header} with no values.
+	 *
+	 * @param name the name of the header
+	 * @throws IllegalArgumentException if the name is blank.
+	 */
 	public HttpHeader(String name) {
 		this(name, new ArrayList<>());
 	}
 
+	/**
+	 * Creates a new multi-valued {@link Header}.
+	 *
+	 * @param name   the name of the header
+	 * @param values a collection of header values
+	 * @throws IllegalArgumentException if the name is blank.
+	 */
 	public HttpHeader(String name, Collection<String> values) {
 
 		if (StringUtils.isBlank(name)) {
@@ -28,10 +43,24 @@ public class HttpHeader implements Header {
 		this.values = new ArrayList<>(values);
 	}
 
+	/**
+	 * Creates a new single-values {@link Header}.
+	 *
+	 * @param name  the name of the header
+	 * @param value the header value
+	 * @throws IllegalArgumentException if the name is blank.
+	 */
 	public HttpHeader(String name, String value) {
 		this(name, Collections.singletonList(value));
 	}
 
+	/**
+	 * Creates a new multi-valued {@link Header}.
+	 *
+	 * @param name   the name of the header
+	 * @param values an array of header values
+	 * @throws IllegalArgumentException if the name is blank.
+	 */
 	public HttpHeader(String name, String... values) {
 		this(name, Arrays.asList(values));
 	}

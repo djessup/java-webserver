@@ -5,12 +5,21 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
+ * A single, immutable HTTP {@link Header}.
+ *
  * @author David Jessup
  */
 public class UnmodifiableHttpHeader implements Header {
 
 	private Header origin;
 
+	/**
+	 * Creates a new {@link UnmodifiableHttpHeader} from the provided {@link Header}. It will operate exactly the same
+	 * as the provided header, except any calls to methods that modify the header will throw an {@link
+	 * UnsupportedOperationException}.
+	 *
+	 * @param origin the existing header
+	 */
 	public UnmodifiableHttpHeader(Header origin) {
 		this.origin = origin;
 	}
@@ -33,40 +42,54 @@ public class UnmodifiableHttpHeader implements Header {
 		return origin.values();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Header add(String value) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Header add(String... newValues) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Header set(String value) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Header set(String... values) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Header remove(String value) {
 		throw new UnsupportedOperationException();
 	}
 
-	@Nonnull
 	@Override
-	public String toString() {
-		return origin.toString();
+	public int hashCode() {
+		return origin.hashCode();
 	}
 
 	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
@@ -75,8 +98,9 @@ public class UnmodifiableHttpHeader implements Header {
 		return origin.equals(obj);
 	}
 
+	@Nonnull
 	@Override
-	public int hashCode() {
-		return origin.hashCode();
+	public String toString() {
+		return origin.toString();
 	}
 }

@@ -1,6 +1,8 @@
 package au.id.deejay.webserver;
 
 /**
+ * Constants used in HTTP messages.
+ *
  * @author David Jessup
  */
 public class MessageConstants {

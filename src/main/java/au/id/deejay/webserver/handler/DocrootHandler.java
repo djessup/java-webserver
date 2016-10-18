@@ -70,11 +70,36 @@ public class DocrootHandler implements RequestHandler {
 		}
 	}
 
+	/**
+	 * Checks if the handler can service a request.
+	 *
+	 * @param request the request to be handled
+	 * @return Returns true if the request is a GET request.
+	 */
 	@Override
 	public boolean canHandle(Request request) {
 		return request.method() == HttpMethod.GET;
 	}
 
+	/**
+	 * Handles a GET request. The handler will first check if the request URI maps to a file or folder within the
+	 * docroot, and then response as follows:
+	 * <p>
+	 * If the requested file does not exist a "404 Not Found" response will be sent.
+	 * <p>
+	 * If the requested file does exist it will be streamed back to the client via a {@link FileResponse}.
+	 * <p>
+	 * If the requested file is actually a directory the handler will check the request has a trailing slash, and if
+	 * not will send a {@link RedirectResponse} to redirect the client to the correct directory URL.
+	 * <p>
+	 * If index files are enabled the handler will look for a matching file inside the directory, and if one is found it
+	 * will be served via a {@link FileResponse}.
+	 * <p>
+	 * Finally, if directory listings are enabled the handler will then send a {@link DirectoryListingResponse}.
+	 *
+	 * @param request the request to provide a response for
+	 * @return Returns a response message for the request.
+	 */
 	@Override
 	public Response handle(Request request) {
 		File requestedFile = child(request.uri().getPath());
@@ -111,6 +136,42 @@ public class DocrootHandler implements RequestHandler {
 		}
 	}
 
+	/**
+	 * Gets a child file inside the document root. Note this will return a valid {@link File}, even if the file does not
+	 * exist (it can be tested with {@link File#exists()}).
+	 *
+	 * @param name the name/path of the child file.
+	 * @return Returns a {@link File} object for the requested child file.
+	 */
+	private File child(String name) {
+		return new File(docroot, name);
+	}
+
+	/**
+	 * Checks if URI ends with a slash ("/") or not.
+	 *
+	 * @param uri the URI to check
+	 * @return Returns true if the URI does NOT end with a slash, or false if it does.
+	 */
+	private boolean uriDoesNotEndWithSlash(URI uri) {
+		return !uri.toString().endsWith("/");
+	}
+
+	/**
+	 * Checks if the index file options is enabled, and at least one index filename has been provided.
+	 *
+	 * @return Returns true if index files are enabled.
+	 */
+	private boolean indexFilesAreEnabled() {
+		return indexFiles != null && !indexFiles.isEmpty();
+	}
+
+	/**
+	 * Looks for a matching index file in a directory.
+	 *
+	 * @param directory the directory to search in.
+	 * @return Returns the first index file found, or null if no index file is found.
+	 */
 	private File findIndexFile(File directory) {
 
 		for (String indexFileName : indexFiles) {
@@ -121,17 +182,5 @@ public class DocrootHandler implements RequestHandler {
 		}
 
 		return null;
-	}
-
-	private boolean indexFilesAreEnabled() {
-		return indexFiles != null && !indexFiles.isEmpty();
-	}
-
-	private boolean uriDoesNotEndWithSlash(URI uri) {
-		return !uri.toString().endsWith("/");
-	}
-
-	private File child(String name) {
-		return new File(docroot, name);
 	}
 }

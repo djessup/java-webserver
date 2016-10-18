@@ -161,7 +161,7 @@ Let's create a new handler that will print the current server time when someone 
 First, we'll create a new `Response` type that outputs the current time as plain text. We could use `HttpResponse` 
 directly, but this way we can keep the code cleaner and easier to test.
 
-```jave
+```java
 import au.id.deejay.webserver.api.HttpStatus;
 import au.id.deejay.webserver.api.HttpVersion;
 import au.id.deejay.webserver.api.Response;

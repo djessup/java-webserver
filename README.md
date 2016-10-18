@@ -1,4 +1,4 @@
-# Java Web Server
+# Java Web Server [![Build Status](https://travis-ci.org/djessup/java-webserver.svg?branch=master)](https://travis-ci.org/djessup/java-webserver)
 
 A simple multi-threaded web server written in Java and implementing the HTTP/1.1 specification.
 

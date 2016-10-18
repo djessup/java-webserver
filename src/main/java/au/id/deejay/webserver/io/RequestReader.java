@@ -9,8 +9,6 @@ import au.id.deejay.webserver.headers.HttpHeaders;
 import au.id.deejay.webserver.request.HttpRequest;
 import au.id.deejay.webserver.request.RequestLine;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.SocketTimeoutException;
@@ -20,8 +18,6 @@ import java.nio.charset.StandardCharsets;
  * @author David Jessup
  */
 public class RequestReader extends Reader {
-
-	private static final Logger LOG = LoggerFactory.getLogger(RequestReader.class);
 
 	private InputStream inputStream;
 
@@ -55,7 +51,7 @@ public class RequestReader extends Reader {
 			RequestLine requestLine = readRequestLine(inputReader);
 			Headers headers = readHeaders(inputReader);
 
-			// FIXME: Full entity-body support as per RFC2616.
+			// TODO: Full entity-body support as per RFC2616.
 			String body = "";
 			if (headers.contains("Content-length") || headers.contains("Transfer-Encoding")) {
 				body = readBody(inputReader);

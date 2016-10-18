@@ -59,6 +59,7 @@ public class WebServerExecutor implements Runnable {
 		}
 	}
 
+	@SuppressWarnings("squid:S1166") // Ignore the suppressed SocketTimeoutException
 	private void handleConnection(ServerSocket serverSocket) throws IOException {
 		try {
 			// Wait for a client connection
@@ -70,7 +71,9 @@ public class WebServerExecutor implements Runnable {
 			// Queue the worker for execution
 			threadPool.execute(worker);
 		} catch (SocketTimeoutException e) {
-			// Swallow the exception and allow the loop to continue
+			/* This exception is expected due to the short socket timeout set in run(), which gives the connection loop
+			 a chance to escape if the server is stopped. Here we just swallow the exception and return control to the
+			 connection loop. */
 		}
 	}
 

@@ -3,8 +3,6 @@ package au.id.deejay.webserver.io;
 import au.id.deejay.webserver.api.Response;
 import au.id.deejay.webserver.exception.ResponseException;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,8 +18,6 @@ import static au.id.deejay.webserver.MessageConstants.CRLF;
  * @author David Jessup
  */
 public class ResponseWriter extends Writer {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ResponseWriter.class);
 
 	private OutputStream outputStream;
 

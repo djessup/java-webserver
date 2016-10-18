@@ -15,9 +15,7 @@ public class WebServer {
 	private static final Logger LOG = LoggerFactory.getLogger(WebServer.class);
 
 	private int port;
-	private int timeout;
 	private int maxThreads;
-	private List<RequestHandler> requestHandlers;
 
 	private boolean running;
 
@@ -53,9 +51,7 @@ public class WebServer {
 		}
 
 		this.port = port;
-		this.timeout = timeout;
 		this.maxThreads = maxThreads;
-		this.requestHandlers = requestHandlers;
 
 		ResponseFactory responseFactory = new ResponseFactory(requestHandlers);
 		this.executor = new WebServerExecutor(port, timeout, maxThreads, responseFactory);

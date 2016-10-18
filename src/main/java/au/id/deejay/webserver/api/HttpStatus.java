@@ -51,19 +51,24 @@ public enum HttpStatus {
 	private final int code;
 	private final String description;
 
+	/**
+	 * Initialises an HTTP status.
+	 *
+	 * @param code        the numeric HTTP status code
+	 * @param description the text description of the HTTP status
+	 */
 	HttpStatus(int code, String description) {
 		this.code = code;
 		this.description = description;
 	}
 
-	public int code() {
-		return code;
-	}
-
-	public String description() {
-		return description;
-	}
-
+	/**
+	 * Gets the {@link HttpStatus} for a numeric status code.
+	 *
+	 * @param code the numeric status code
+	 * @return Returns the corresponding HTTP status.
+	 * @throws IllegalArgumentException if the numeric code does not match a known HTTP status.
+	 */
 	public static HttpStatus fromStatusCode(int code) {
 		for (HttpStatus status : HttpStatus.values()) {
 			if (code == status.code()) {
@@ -72,5 +77,23 @@ public enum HttpStatus {
 		}
 
 		throw new IllegalArgumentException("Unrecognised status code: " + code);
+	}
+
+	/**
+	 * Gets the numeric status code of the HTTP status.
+	 *
+	 * @return Returns the numeric status code.
+	 */
+	public int code() {
+		return code;
+	}
+
+	/**
+	 * Gets the text description of the HTTP status.
+	 *
+	 * @return Returns the status description.
+	 */
+	public String description() {
+		return description;
 	}
 }

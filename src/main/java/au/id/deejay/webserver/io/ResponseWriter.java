@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import static au.id.deejay.webserver.MessageConstants.CRLF;
 
 /**
- * Writes a {@link Response} to an {@link OutputStream}.
+ * Writes {@link Response}s to an {@link OutputStream}.
  *
  * @author David Jessup
  */
@@ -21,11 +21,22 @@ public class ResponseWriter extends Writer {
 
 	private OutputStream outputStream;
 
+	/**
+	 * Creates a new {@link ResponseWriter} that will stream {@link Response} objects to the provided {@link
+	 * OutputStream}.
+	 *
+	 * @param outputStream the output stream {@link Response}s will be written to.
+	 */
 	public ResponseWriter(OutputStream outputStream) {
 		super(outputStream);
 		this.outputStream = outputStream;
 	}
 
+	/**
+	 * Writes a {@link Response} to the output stream.
+	 *
+	 * @param response the response to write
+	 */
 	public void writeResponse(Response response) {
 		try {
 			writeStatusLine(response);

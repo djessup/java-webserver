@@ -5,19 +5,23 @@ import au.id.deejay.webserver.api.HttpVersion;
 import au.id.deejay.webserver.exception.ResponseException;
 import org.apache.tika.Tika;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
+ * An HTTP response which streams a file back to the client in the response body.
+ *
  * @author David Jessup
  */
 public class FileResponse extends HttpResponse {
 
 	private final File file;
 
+	/**
+	 * Creates a new {@link FileResponse}.
+	 *
+	 * @param file    the file to be streamed in the response body.
+	 * @param version the HTTP version of the response.
+	 */
 	public FileResponse(File file, HttpVersion version) {
 		super(HttpStatus.OK_200, version);
 		this.file = file;

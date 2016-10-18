@@ -21,6 +21,10 @@ import java.net.SocketTimeoutException;
 import java.util.List;
 
 /**
+ * A {@link WebWorker} is a worker thread that handle a single client connection before terminating. It will read
+ * requests from the client's input stream and generate responses to them using it's {@link ResponseFactory}, for as
+ * long as the HTTP connection is alive.
+ *
  * @author David Jessup
  */
 public class WebWorker implements Runnable {
@@ -33,6 +37,12 @@ public class WebWorker implements Runnable {
 	private final ResponseFactory responseFactory;
 	private boolean keepAlive = false;
 
+	/**
+	 * Creates a new {@link WebWorker}.
+	 *
+	 * @param client          the client socket this worker will service
+	 * @param responseFactory the response factory to use to generate {@link Response}s.
+	 */
 	public WebWorker(Socket client, ResponseFactory responseFactory) {
 		this.client = client;
 		this.responseFactory = responseFactory;
@@ -104,6 +114,22 @@ public class WebWorker implements Runnable {
 		}
 	}
 
+	private void closeConnection() {
+		try {
+			client.close();
+		} catch (IOException e) {
+			LOG.error("Failed to close client connection", e);
+		}
+	}
+
+	private boolean isKeepAliveConnection() {
+		return keepAlive;
+	}
+
+	private void keepAliveConnection(boolean keepAlive) {
+		this.keepAlive = keepAlive;
+	}
+
 	private boolean shouldKeepAlive(HttpMessage message) {
 		List<String> connectionValues = message.headers().values(CONNECTION_HEADER);
 		if (connectionValues != null) {
@@ -126,27 +152,11 @@ public class WebWorker implements Runnable {
 		}
 	}
 
-	private boolean isKeepAliveConnection() {
-		return keepAlive;
-	}
-
-	private void keepAliveConnection(boolean keepAlive) {
-		this.keepAlive = keepAlive;
-	}
-
 	private void writeResponse(ResponseWriter responseWriter, Response response) {
 		try {
 			responseWriter.writeResponse(response);
 		} catch (ResponseException e) {
 			LOG.error("Unable to send response", e);
-		}
-	}
-
-	private void closeConnection() {
-		try {
-			client.close();
-		} catch (IOException e) {
-			LOG.error("Failed to close client connection", e);
 		}
 	}
 }

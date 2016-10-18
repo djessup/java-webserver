@@ -6,12 +6,21 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * An immutable collection of immutable headers.
+ *
  * @author David Jessup
  */
 public class UnmodifiableHttpHeaders implements Headers {
 
 	private Headers origin;
 
+	/**
+	 * Creates a new {@link UnmodifiableHttpHeaders} collection from the provided {@link Headers}. The new headers
+	 * collection contains the same data as the origin collection, but any attempt to modify it will throw an {@link
+	 * UnsupportedOperationException}. Any {@link Header}s provided by this object will also be immutable.
+	 *
+	 * @param origin the existing header collection
+	 */
 	public UnmodifiableHttpHeaders(Headers origin) {
 		this.origin = origin;
 	}
@@ -38,42 +47,63 @@ public class UnmodifiableHttpHeaders implements Headers {
 		return origin.values(key);
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Headers add(Header header) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Headers add(String key, String value) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Headers add(String key, String... values) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Headers set(Header header) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Headers set(String key, String value) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Headers set(String key, String... values) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @throws UnsupportedOperationException if this method is called.
+	 */
 	@Nonnull
 	@Override
 	public Headers remove(String key) {
@@ -98,15 +128,15 @@ public class UnmodifiableHttpHeaders implements Headers {
 		return origin.names();
 	}
 
+	@Override
+	public int hashCode() {
+		return origin.hashCode();
+	}
+
 	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
 	@Override
 	public boolean equals(Object obj) {
 		return origin.equals(obj);
-	}
-
-	@Override
-	public int hashCode() {
-		return origin.hashCode();
 	}
 
 	@Nonnull

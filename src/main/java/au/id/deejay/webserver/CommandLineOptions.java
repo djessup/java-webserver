@@ -34,15 +34,13 @@ public class CommandLineOptions {
 	 * Default request timeout.
 	 */
 	private static final int DEFAULT_TIMEOUT = 10;
-
-	private OptionSpec<Integer> port;
-	private OptionSpec<String> docroot;
 	private final OptionSpec<Integer> timeout;
 	private final OptionSpec<Integer> maxThreads;
 	private final OptionSpec<Void> help;
-
 	private final OptionParser parser;
 	private final OptionSet options;
+	private OptionSpec<Integer> port;
+	private OptionSpec<String> docroot;
 
 	/**
 	 * Parses an array of command line options.
@@ -64,36 +62,12 @@ public class CommandLineOptions {
 		options = parser.parse(args);
 	}
 
-	public int port() {
-		return options.valueOf(port);
-	}
-
-	public String docroot() {
-		return options.valueOf(docroot);
-	}
-
-	public int timeout() {
-		return options.valueOf(timeout);
-	}
-
-	public int maxThreads() {
-		return options.valueOf(maxThreads);
-	}
-
-	public boolean help() {
-		return options.has(help);
-	}
-
-	public void printHelpOn(OutputStream sink) throws IOException {
-		parser.printHelpOn(sink);
-	}
-
 	/**
 	 * Builds the "port" option
 	 */
 	private OptionSpec<Integer> withPort() {
 		return parser.acceptsAll(Arrays.asList("port", "p"),
-						  "Port to bind the web server to. Can be any unused port in the range 0-65535")
+								 "Port to bind the web server to. Can be any unused port in the range 0-65535")
 				.withRequiredArg()
 				.ofType(Integer.class)
 				.defaultsTo(DEFAULT_PORT);
@@ -104,7 +78,7 @@ public class CommandLineOptions {
 	 */
 	private OptionSpec<String> withDocroot() {
 		return parser.acceptsAll(Arrays.asList("docroot", "d"),
-						  "Path to the document root containing the files the server will serve")
+								 "Path to the document root containing the files the server will serve")
 				.withRequiredArg()
 				.defaultsTo(DEFAULT_DOCROOT);
 	}
@@ -114,7 +88,7 @@ public class CommandLineOptions {
 	 */
 	private OptionSpec<Integer> withTimeout() {
 		return parser.acceptsAll(Arrays.asList("timeout", "t"),
-						  "Request timeout (in seconds). Requests which take longer than this will be terminated")
+								 "Request timeout (in seconds). Requests which take longer than this will be terminated")
 				.withRequiredArg()
 				.ofType(Integer.class)
 				.defaultsTo(DEFAULT_TIMEOUT);
@@ -125,7 +99,7 @@ public class CommandLineOptions {
 	 */
 	private OptionSpec<Integer> withMaxThreads() {
 		return parser.acceptsAll(Arrays.asList("maxthreads", "m"),
-						  "Maximum number of worker threads that may be spawned to service client requests")
+								 "Maximum number of worker threads that may be spawned to service client requests")
 				.withRequiredArg()
 				.ofType(Integer.class)
 				.defaultsTo(DEFAULT_MAX_THREADS);
@@ -136,7 +110,62 @@ public class CommandLineOptions {
 	 */
 	private OptionSpec<Void> withHelp() {
 		return parser.acceptsAll(Arrays.asList("help", "h"),
-						  "Display help/usage information")
+								 "Display help/usage information")
 				.forHelp();
+	}
+
+	/**
+	 * Gets the port option.
+	 *
+	 * @return Returns the port.
+	 */
+	public int port() {
+		return options.valueOf(port);
+	}
+
+	/**
+	 * Gets the docroot option.
+	 *
+	 * @return Returns the docroot.
+	 */
+	public String docroot() {
+		return options.valueOf(docroot);
+	}
+
+	/**
+	 * Gets the timeout option.
+	 *
+	 * @return Returns the timeout.
+	 */
+	public int timeout() {
+		return options.valueOf(timeout);
+	}
+
+	/**
+	 * Gets the max threads option.
+	 *
+	 * @return Returns the max threads.
+	 */
+	public int maxThreads() {
+		return options.valueOf(maxThreads);
+	}
+
+	/**
+	 * Gets the help flag option.
+	 *
+	 * @return Returns the help flag.
+	 */
+	public boolean help() {
+		return options.has(help);
+	}
+
+	/**
+	 * Writes the CLI options help to an {@link OutputStream}.
+	 *
+	 * @param sink the stream to write to
+	 * @throws IOException if there is a problem writing to the stream.
+	 */
+	public void printHelpOn(OutputStream sink) throws IOException {
+		parser.printHelpOn(sink);
 	}
 }

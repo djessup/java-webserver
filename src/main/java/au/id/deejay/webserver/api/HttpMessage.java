@@ -6,6 +6,7 @@ import au.id.deejay.webserver.headers.Headers;
 import java.io.InputStream;
 
 /**
+ * An HTTP message object (i.e. a request or response).
  *
  * @author David Jessup
  */

@@ -21,7 +21,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class RequestReader extends Reader {
 
-	private InputStream inputStream;
+	private final BufferedReader inputReader;
+	private final InputStream inputStream;
 
 	/**
 	 * Constructs a new {@link RequestReader} that deserialises the provided {@link InputStream} in {@link Request}
@@ -31,6 +32,7 @@ public class RequestReader extends Reader {
 	 */
 	public RequestReader(InputStream inputStream) {
 		this.inputStream = inputStream;
+		this.inputReader = new BufferedReader(new InputStreamReader(inputStream));
 	}
 
 	@Override
@@ -53,16 +55,14 @@ public class RequestReader extends Reader {
 	 *                                abnormal conditions like a broken network connection.
 	 */
 	public Request readRequest() throws SocketTimeoutException {
-		BufferedReader inputReader = new BufferedReader(new InputStreamReader(inputStream));
-
 		try {
-			RequestLine requestLine = readRequestLine(inputReader);
-			Headers headers = readHeaders(inputReader);
+			RequestLine requestLine = readRequestLine();
+			Headers headers = readHeaders();
 
 			// TODO: Full entity-body support as per RFC2616.
 			String body = "";
 			if (headers.contains("Content-length") || headers.contains("Transfer-Encoding")) {
-				body = readBody(inputReader);
+				body = readBody();
 			}
 
 			return new HttpRequest(requestLine, headers, body);
@@ -73,12 +73,12 @@ public class RequestReader extends Reader {
 		}
 	}
 
-	private RequestLine readRequestLine(BufferedReader inputReader) throws IOException {
+	private RequestLine readRequestLine() throws IOException {
 		return new RequestLine(inputReader.readLine());
 	}
 
 	// TODO: support multi-line header values (additional lines start with a space or tab character)
-	private Headers readHeaders(BufferedReader inputReader) throws IOException {
+	private Headers readHeaders() throws IOException {
 		Headers headers = new HttpHeaders();
 
 		// Subsequent lines are request headers until a blank line is encountered
@@ -93,7 +93,8 @@ public class RequestReader extends Reader {
 		return headers;
 	}
 
-	private String readBody(BufferedReader inputReader) throws IOException {
+	private String readBody() throws IOException {
+		// FIXME: This will read everything available, instead it should read Content-length bytes
 		return IOUtils.toString(inputReader);
 	}
 

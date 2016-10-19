@@ -5,6 +5,7 @@ import au.id.deejay.webserver.api.HttpStatus;
 import au.id.deejay.webserver.api.HttpVersion;
 import au.id.deejay.webserver.api.Request;
 import au.id.deejay.webserver.api.Response;
+import au.id.deejay.webserver.exception.ResponseException;
 import au.id.deejay.webserver.io.ResponseWriter;
 import au.id.deejay.webserver.response.ErrorResponse;
 import au.id.deejay.webserver.response.HttpResponse;
@@ -18,6 +19,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -58,6 +60,7 @@ public class WebWorkerTest {
 
 		worker.run();
 
+		verify(responseFactory).response(any());
 		assertResponseWasSentToClient();
 	}
 
@@ -87,6 +90,7 @@ public class WebWorkerTest {
 	@Test
 	public void testWorkerAbortsIfClientSocketTimesOut() throws Exception {
 		withResponseFactory();
+		withValidRequest();
 		withTimeoutSocket();
 		withWorker();
 
@@ -96,13 +100,36 @@ public class WebWorkerTest {
 	}
 
 	@Test
-	public void testKeepAliveBehaviour() throws Exception {
+	public void testErrorGeneratingResponseReturns500Error() throws Exception {
+		withBrokenResponseFactory();
+		withValidRequest();
+		withSocket();
+		withWorker();
 
+		worker.run();
 
+		assertResponseWasSentToClient(ErrorResponse.INTERNAL_SERVER_ERROR_500);
 	}
 
+	@Test
+	public void testKeepAliveBehaviour() throws Exception {
+		withResponseFactory();
+		withKeepAliveRequests();
+		withSocket();
+		withWorker();
+
+		worker.run();
+
+		assertResponseWasSentToClient(Arrays.asList(this.response, this.response));
+	}
+
+
 	private void assertResponseWasSentToClient() {
-		assertResponseWasSentToClient(Collections.singletonList(this.response));
+		assertResponseWasSentToClient(this.response);
+	}
+
+	private void assertResponseWasSentToClient(Response response) {
+		assertResponseWasSentToClient(Collections.singletonList(response));
 	}
 
 	private void assertResponseWasSentToClient(Collection<Response> responses) {
@@ -121,7 +148,17 @@ public class WebWorkerTest {
 			+ CRLF;
 
 		response = new HttpResponse(HttpStatus.OK_200, "Test response", HttpVersion.HTTP_1_1);
-		when(responseFactory.response(any())).thenReturn(response);
+	}
+
+	private void withKeepAliveRequests() throws Exception {
+		requestString = "GET /index.html HTTP/1.1" + CRLF
+			+ "Connection: keep-alive" + CRLF
+			+ CRLF
+			+ "GET /index.html HTTP/1.1" + CRLF
+			+ "Connection: close" + CRLF
+			+ CRLF;
+
+		response = new HttpResponse(HttpStatus.OK_200, "Test response", HttpVersion.HTTP_1_1);
 	}
 
 	private void withBadRequest() throws Exception {
@@ -140,7 +177,12 @@ public class WebWorkerTest {
 
 	private void withResponseFactory() {
 		responseFactory = mock(ResponseFactory.class);
-		when(responseFactory.response(any(Request.class))).thenReturn(response);
+		when(responseFactory.response(any(Request.class))).thenAnswer(invocationOnMock -> this.response);
+	}
+
+	private void withBrokenResponseFactory() {
+		responseFactory = mock(ResponseFactory.class);
+		doAnswer(invocationOnMock -> { throw new ResponseException(); }).when(responseFactory).response(any());
 	}
 
 	private void withWorker() {

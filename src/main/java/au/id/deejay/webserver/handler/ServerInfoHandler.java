@@ -72,26 +72,11 @@ public class ServerInfoHandler implements RequestHandler {
 
 		String template = "<h1>Server info</h1>" +
 				"<table border='1' width='50%'>" +
-				"<tr>" +
-				"<th width='30%'>Uptime</th>" +
-				"<td width='70%'>{4}d {5}h {6}m {7}s</td>" +
-				"</tr>" +
-				"<tr>" +
-				"<th>Port</th>" +
-				"<td>{0}</td>" +
-				"</tr>" +
-				"<tr>" +
-				"<th>Timeout</th>" +
-				"<td>{1}s</td>" +
-				"</tr>" +
-				"<tr>" +
-				"<th>Max worker threads</th>" +
-				"<td>{2}</td>" +
-				"</tr>" +
-				"<tr>" +
-				"<th>Document root</th>" +
-				"<td>{3}</td>" +
-				"</tr>" +
+				"<tr><th width='30%'>Uptime</th><td width='70%'>{4}d {5}h {6}m {7}s</td></tr>" +
+				"<tr><th>Port</th><td>{0}</td></tr>" +
+				"<tr><th>Timeout</th><td>{1}s</td></tr>" +
+				"<tr><th>Max worker threads</th><td>{2}</td></tr>" +
+				"<tr><th>Document root</th><td>{3}</td></tr>" +
 				"</table>";
 
 		return new HttpResponse(HttpStatus.OK_200,

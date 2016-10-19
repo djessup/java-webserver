@@ -22,7 +22,8 @@ public class App {
 
 	private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
-	private App() {}
+	private App() {
+	}
 
 	/**
 	 * Main application loop. Parses the command line args then tries to start a server instance.
@@ -41,7 +42,9 @@ public class App {
 		}
 
 		// Otherwise read the CLI options (or defaults, as defined in CommandLineOptions)
-		int port, timeout, maxThreads;
+		int port;
+		int timeout;
+		int maxThreads;
 		String docroot;
 
 		try {

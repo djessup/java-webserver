@@ -33,6 +33,7 @@ public class App {
 
 		CommandLineOptions options = new CommandLineOptions(args);
 
+
 		// If the help options is set, print usage and exit.
 		if (options.help()) {
 			printUsage();
@@ -40,10 +41,17 @@ public class App {
 		}
 
 		// Otherwise read the CLI options (or defaults, as defined in CommandLineOptions)
-		int port = options.port();
-		int timeout = options.timeout();
-		int maxThreads = options.maxThreads();
-		String docroot = options.docroot();
+		int port, timeout, maxThreads;
+		String docroot;
+
+		try {
+			port = options.port();
+			timeout = options.timeout();
+			maxThreads = options.maxThreads();
+			docroot = options.docroot();
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Invalid argument given", e);
+		}
 
 		// Configure request handlers
 		RequestHandler serverInfoHandler = new ServerInfoHandler(port, timeout, maxThreads, docroot, System.currentTimeMillis());

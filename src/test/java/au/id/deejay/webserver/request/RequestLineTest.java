@@ -86,7 +86,14 @@ public class RequestLineTest {
 	public void testEquals() throws Exception {
 		RequestLine requestLine1 = new RequestLine("GET /index.html HTTP/1.0");
 		RequestLine requestLine2 = new RequestLine("GET /index.html HTTP/1.0");
+		RequestLine requestLine3 = new RequestLine("POST /index.html HTTP/1.0");
+		RequestLine requestLine4 = new RequestLine("GET /index2.html HTTP/1.0");
+		RequestLine requestLine5 = new RequestLine("GET /index.html HTTP/1.1");
 
 		assertThat(requestLine1.equals(requestLine2), is(true));
+		assertThat(requestLine1.equals(requestLine3), is(false));
+		assertThat(requestLine1.equals(requestLine4), is(false));
+		assertThat(requestLine1.equals(requestLine5), is(false));
+		assertThat(requestLine1.equals("not a request line"), is(false));
 	}
 }

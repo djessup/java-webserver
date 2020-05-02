@@ -8,8 +8,11 @@ import au.id.deejay.webserver.response.DirectoryListingResponse;
 import au.id.deejay.webserver.response.ErrorResponse;
 import au.id.deejay.webserver.response.FileResponse;
 import au.id.deejay.webserver.response.RedirectResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -22,6 +25,8 @@ import java.util.List;
  * @author David Jessup
  */
 public class DocrootHandler implements RequestHandler {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DocrootHandler.class);
 
 	private final File docroot;
 	private final List<String> indexFiles;
@@ -41,7 +46,6 @@ public class DocrootHandler implements RequestHandler {
 	 */
 	public DocrootHandler(String path, List<String> indexFiles, boolean allowDirectoryListings) {
 		this(new File(path), indexFiles, allowDirectoryListings);
-
 	}
 
 	/**
@@ -104,14 +108,22 @@ public class DocrootHandler implements RequestHandler {
 	public Response handle(Request request) {
 		File requestedFile = child(request.uri().getPath());
 
+		// Check the requested file is within the configured docroot
+		try {
+			if (!requestedFile.getCanonicalPath().startsWith(docroot.getCanonicalPath())) {
+				return ErrorResponse.FORBIDDEN_403;
+			}
+		} catch (IOException e) {
+			LOG.error("Failed to resolve requested file path.", e);
+			return ErrorResponse.INTERNAL_SERVER_ERROR_500;
+		}
+
 		if (!requestedFile.exists()) {
 			return ErrorResponse.NOT_FOUND_404;
 		}
 
 		if (requestedFile.isDirectory()) {
-
 			return handleDirectoryRequest(request, requestedFile);
-
 		} else if (requestedFile.isFile()) {
 			// Serve the file
 			return new FileResponse(requestedFile, request.version());

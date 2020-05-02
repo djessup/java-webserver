@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -41,19 +40,16 @@ public class FileResponseTest {
 		withResponse();
 	}
 
+	/**
+	 * This is really an edge case that is unlikely to occur. For the stream() to throw an exception would mean the file
+	 * existed and was valid at the time of construction, but was deleted before the response was streamed.
+	 * Still, for the sake of test coverage...
+	 */
 	@Test(expected = ResponseException.class)
 	public void testMissingFileStreamThrowsException() throws Exception {
 		withIndexFile();
 		withResponse();
-
-		// Simulate the file being removed in between the request construction and stream call with a
-		// FileNotFoundException. This will propogate via the FileInputStream constructor, where the real exception
-		// would be emitted from in a real-world situation.
-
-		// Simply using an invalid path won't work because the FileResponse constructor will throw an exception before
-		// stream() can be called.
-
-		doThrow(FileNotFoundException.class).when(file).getPath();
+		withInvalidFile();
 
 		response.stream();
 	}
@@ -76,17 +72,6 @@ public class FileResponseTest {
 		assertThat(response.headers().value("Content-type"), is("text/html"));
 	}
 
-	@Test(expected = ResponseException.class)
-	public void testUndetectableContentTypeThrowException() throws Exception {
-		withIndexFile();
-
-		// Another cludged exception to simulate a real-world error state when attempting to determine the MIME type of
-		// a file.
-		when(file.toURI()).thenThrow(IOException.class);
-
-		withResponse();
-	}
-
 	private File getDocrootFile(String path) throws Exception {
 		return new File(
 				URLDecoder.decode(
@@ -102,7 +87,13 @@ public class FileResponseTest {
 		file = spy(getDocrootFile("/index.html"));
 	}
 
-	private void withResponse() throws Exception {
+	private void withInvalidFile() throws Exception {
+		// Cause File.isInvalid() to return false
+		when(file.getPath()).thenReturn(new char[]{'\u0000'}.toString());
+		file = new File("does-not-exist");
+	}
+	private void withResponse() {
 		response = new FileResponse(file, HttpVersion.HTTP_1_1);
 	}
+
 }

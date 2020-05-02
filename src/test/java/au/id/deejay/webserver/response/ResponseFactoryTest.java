@@ -42,7 +42,6 @@ public class ResponseFactoryTest {
 
 		when(handler1.canHandle(any())).thenReturn(false);
 		when(handler2.canHandle(any())).thenReturn(true);
-		when(handler3.canHandle(any())).thenReturn(true);
 
 		Response response = responseFactory.response(request);
 
@@ -60,7 +59,6 @@ public class ResponseFactoryTest {
 		withResponseFactory();
 		when(handler1.canHandle(any())).thenReturn(false);
 		when(handler2.canHandle(any())).thenReturn(false);
-		when(handler3.canHandle(any())).thenReturn(false);
 
 		Response response = responseFactory.response(request);
 

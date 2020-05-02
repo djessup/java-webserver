@@ -10,18 +10,18 @@ import java.io.OutputStream;
  */
 public class StringCollectorOutputStream extends OutputStream {
 
-	private StringBuilder content = new StringBuilder();
+    private StringBuilder content = new StringBuilder();
 
-	@Override
-	public void write(int x) throws IOException {
-		content.append((char) x);
-	}
+    @Override
+    public void write(int x) throws IOException {
+        content.append((char) x);
+    }
 
-	public String toString() {
-		return content.toString();
-	}
+    public String toString() {
+        return content.toString();
+    }
 
-	public void clear() {
-		content = new StringBuilder();
-	}
+    public void clear() {
+        content = new StringBuilder();
+    }
 }

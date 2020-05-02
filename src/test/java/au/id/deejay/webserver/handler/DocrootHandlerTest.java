@@ -132,6 +132,16 @@ public class DocrootHandlerTest {
 		assertThat(response.status(), is(HttpStatus.FORBIDDEN_403));
 	}
 
+	@Test
+	public void testAccessOutsideDocrootReturns403Error() throws Exception {
+		withHandler();
+		withMockGetFileRequestOutsideDocroot();
+
+		Response response = requestHandler.handle(request);
+
+		assertThat(response.status(), is(HttpStatus.FORBIDDEN_403));
+	}
+
 	private void withHandler() throws Exception {
 		String docroot = URLDecoder.decode(getClass().getResource("/docroot").getFile(), UTF_8.toString());
 		requestHandler = new DocrootHandler(docroot, Collections.singletonList("index.html"), true);
@@ -178,4 +188,9 @@ public class DocrootHandlerTest {
 		when(request.uri()).thenReturn(new URI("/path/to/file.txt"));
 	}
 
+	private void withMockGetFileRequestOutsideDocroot() throws Exception {
+		request = mock(Request.class);
+		when(request.method()).thenReturn(HttpMethod.GET);
+		when(request.uri()).thenReturn(new URI("/../secret.txt"));
+	}
 }

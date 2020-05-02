@@ -54,6 +54,12 @@ public class FileResponseTest {
 		response.stream();
 	}
 
+	@Test(expected = ResponseException.class)
+	public void testUnreadableFileThrowsException() {
+		withUnreadableFile();
+		withResponse();
+	}
+
 	@Test
 	public void testContentLengthHeader() throws Exception {
 		withIndexFile();
@@ -92,6 +98,12 @@ public class FileResponseTest {
 		when(file.getPath()).thenReturn(new char[]{'\u0000'}.toString());
 		file = new File("does-not-exist");
 	}
+
+	private void withUnreadableFile() {
+		file = mock(File.class);
+		when(file.canRead()).thenReturn(false);
+	}
+
 	private void withResponse() {
 		response = new FileResponse(file, HttpVersion.HTTP_1_1);
 	}

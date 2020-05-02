@@ -81,7 +81,6 @@ public class WebServerExecutor implements Runnable {
      * Stops the executor.
      */
     public synchronized void stop() {
-        running = false;
 
         LOG.info("Shutting down web server executor.");
 
@@ -94,6 +93,8 @@ public class WebServerExecutor implements Runnable {
                 e);
             Thread.currentThread().interrupt();
         }
+
+        running = false;
 
         LOG.info("Web server executor has shutdown.");
     }

@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
  * @author David Jessup
@@ -15,40 +15,48 @@ import static org.mockito.Mockito.mock;
 public class WebServerExecutorTest {
 
 	private WebServerExecutor executor;
+    private Thread executorThread;
 
-	@After
-	public void tearDown() throws Exception {
+    @After
+	public void tearDown() {
 		if (executor != null && executor.running()) {
 			executor.stop();
 		}
 	}
 
 	@Test
-	public void testConstructor() throws Exception {
-		executor = new WebServerExecutor(0, 10, 10, mock(ResponseFactory.class));
+	public void testServerDoesNotStartBeforeInstructed() {
+		withExecutor();
+
 		assertThat(executor.running(), is(false));
 	}
 
-	@Test
-	public void run() throws Exception {
-		executor = new WebServerExecutor(0, 10, 10, mock(ResponseFactory.class));
-
-		Thread executorThread = new Thread(executor);
-		executorThread.start();
-
-		await().until(executorThread::isAlive);
+    @Test
+	public void testServerCanRun() {
+		withExecutor();
+        withRunningServer();
 
 		assertThat(executor.running(), is(true));
 	}
 
 	@Test
-	public void running() throws Exception {
+	public void testServerCanStop() {
+		withExecutor();
+        withRunningServer();
 
+        executor.stop();
+
+		assertThat(executor.running(), is(false));
 	}
 
-	@Test
-	public void stop() throws Exception {
+    private void withExecutor() {
+        executor = new WebServerExecutor(0, 1, 10, mock(ResponseFactory.class));
+    }
 
-	}
+    private void withRunningServer() {
+        executorThread = new Thread(executor);
+        executorThread.start();
 
+        await().until(executorThread::isAlive);
+    }
 }

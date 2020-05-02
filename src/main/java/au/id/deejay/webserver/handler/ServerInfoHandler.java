@@ -14,61 +14,61 @@ import java.util.concurrent.TimeUnit;
  */
 public class ServerInfoHandler implements RequestHandler {
 
-	/**
-	 * The path the server info will be served from
-	 */
-	private static final String SERVER_INFO_PATH = "/serverInfo";
+    /**
+     * The path the server info will be served from
+     */
+    private static final String SERVER_INFO_PATH = "/serverInfo";
 
-	private int port;
-	private int timeout;
-	private int maxThreads;
-	private String docroot;
-	private long startTime;
+    private int port;
+    private int timeout;
+    private int maxThreads;
+    private String docroot;
+    private long startTime;
 
-	/**
-	 * Creates a new {@link ServerInfoHandler}.
-	 *
-	 * @param port       the port the server is being run on
-	 * @param timeout    the client timeout, in seconds
-	 * @param maxThreads the maximum number of worker threads the server is configured to use
-	 * @param docroot    the path to the server's document root
-	 * @param startTime  the time the server was started (as reported by {@link System#currentTimeMillis()}
-	 */
-	public ServerInfoHandler(int port, int timeout, int maxThreads, String docroot, long startTime) {
-		this.port = port;
-		this.timeout = timeout;
-		this.maxThreads = maxThreads;
-		this.docroot = docroot;
-		this.startTime = startTime;
-	}
+    /**
+     * Creates a new {@link ServerInfoHandler}.
+     *
+     * @param port       the port the server is being run on
+     * @param timeout    the client timeout, in seconds
+     * @param maxThreads the maximum number of worker threads the server is configured to use
+     * @param docroot    the path to the server's document root
+     * @param startTime  the time the server was started (as reported by {@link System#currentTimeMillis()}
+     */
+    public ServerInfoHandler(int port, int timeout, int maxThreads, String docroot, long startTime) {
+        this.port = port;
+        this.timeout = timeout;
+        this.maxThreads = maxThreads;
+        this.docroot = docroot;
+        this.startTime = startTime;
+    }
 
-	/**
-	 * Checks that the request is a GET request to /serverInfo.
-	 *
-	 * @param request the request to be handled.
-	 * @return Returns true if the request is a GET request to the serverInfo path
-	 */
-	@Override
-	public boolean canHandle(Request request) {
-		return request.method() == HttpMethod.GET && SERVER_INFO_PATH.equals(request.uri().getPath());
-	}
+    /**
+     * Checks that the request is a GET request to /serverInfo.
+     *
+     * @param request the request to be handled.
+     * @return Returns true if the request is a GET request to the serverInfo path
+     */
+    @Override
+    public boolean canHandle(Request request) {
+        return request.method() == HttpMethod.GET && SERVER_INFO_PATH.equals(request.uri().getPath());
+    }
 
-	/**
-	 * Sends a simple summary of the server configuration and uptime.
-	 *
-	 * @param request the request to provide a response for
-	 * @return Returns a 200 OK response containing a summary of the server.
-	 */
-	@Override
-	public Response handle(Request request) {
+    /**
+     * Sends a simple summary of the server configuration and uptime.
+     *
+     * @param request the request to provide a response for
+     * @return Returns a 200 OK response containing a summary of the server.
+     */
+    @Override
+    public Response handle(Request request) {
 
-		long uptime = (System.currentTimeMillis() - startTime) / 1000;
+        long uptime = (System.currentTimeMillis() - startTime) / 1000;
 
-		// Breakdown uptime into days/hours/mins/secs
-		long upDays = TimeUnit.SECONDS.toDays(uptime);
-		long upHours = TimeUnit.SECONDS.toHours(uptime) - (upDays * 24);
-		long upMins = TimeUnit.SECONDS.toMinutes(uptime) - (TimeUnit.SECONDS.toHours(uptime) * 60);
-		long upSecs = TimeUnit.SECONDS.toSeconds(uptime) - (TimeUnit.SECONDS.toMinutes(uptime) * 60);
+        // Breakdown uptime into days/hours/mins/secs
+        long upDays = TimeUnit.SECONDS.toDays(uptime);
+        long upHours = TimeUnit.SECONDS.toHours(uptime) - (upDays * 24);
+        long upMins = TimeUnit.SECONDS.toMinutes(uptime) - (TimeUnit.SECONDS.toHours(uptime) * 60);
+        long upSecs = TimeUnit.SECONDS.toSeconds(uptime) - (TimeUnit.SECONDS.toMinutes(uptime) * 60);
 
 		String template = "<h1>Server info</h1>" +
 				"<table border='1' width='50%'>" +
@@ -79,8 +79,16 @@ public class ServerInfoHandler implements RequestHandler {
 				"<tr><th>Document root</th><td>{3}</td></tr>" +
 				"</table>";
 
-		return new HttpResponse(HttpStatus.OK_200,
-								MessageFormat.format(template, String.valueOf(port), timeout, maxThreads, docroot, upDays, upHours, upMins, upSecs),
-								request.version());
-	}
+        return new HttpResponse(HttpStatus.OK_200,
+                                MessageFormat.format(template,
+                                                     String.valueOf(port),
+                                                     timeout,
+                                                     maxThreads,
+                                                     docroot,
+                                                     upDays,
+                                                     upHours,
+                                                     upMins,
+                                                     upSecs),
+                                request.version());
+    }
 }

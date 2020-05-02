@@ -13,21 +13,21 @@ import au.id.deejay.webserver.headers.HttpHeaders;
  */
 public class RedirectResponse extends HttpResponse {
 
-	private final String destination;
+    private final String destination;
 
-	/**
-	 * Creates a new {@link RedirectResponse}.
-	 *
-	 * @param destination the location to redirect to
-	 * @param version     the HTTP version of the response
-	 */
-	public RedirectResponse(String destination, HttpVersion version) {
-		super(HttpStatus.MOVED_PERMANENTLY_301, version);
-		this.destination = destination;
-	}
+    /**
+     * Creates a new {@link RedirectResponse}.
+     *
+     * @param destination the location to redirect to
+     * @param version     the HTTP version of the response
+     */
+    public RedirectResponse(String destination, HttpVersion version) {
+        super(HttpStatus.MOVED_PERMANENTLY_301, version);
+        this.destination = destination;
+    }
 
-	@Override
-	public Headers headers() {
-		return new HttpHeaders(new HttpHeader("Location", destination));
-	}
+    @Override
+    public Headers headers() {
+        return new HttpHeaders(new HttpHeader("Location", destination));
+    }
 }

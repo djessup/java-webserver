@@ -7,7 +7,7 @@ package au.id.deejay.webserver;
  */
 public class MessageConstants {
 
-	public static final String CRLF = "\r\n";
+    public static final String CRLF = "\r\n";
 
-	private MessageConstants() {}
+    private MessageConstants() {}
 }

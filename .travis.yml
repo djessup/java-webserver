@@ -12,6 +12,8 @@ deploy:
   on:
     repo: djessup/java-webserver
     tags: true
+addons:
+  sonarcube: false
 env:
   global:
     - secure: "TggK+fj4YkrxpWP5owHhTCFWAmdHn9QIEhZfHZucAa9Gs3SezAZsgKAYDtiG1Nnd1KeswZkqB9JFQPyZ1Kd/cPbrSyFRQqBNXqdIAdTd4fesp/eF3CbOgiXV83UP50n+ybS4N+SFIJmPLSUJT+jpa4IuGtGIg+GHk5OpBtHLRYJeQrmeQ+3J2SyVdGjJnvP7+C59ZmRx44Uwgb7aLjROODKcxGpOsH//tAQ1b5DhUg0iUXzXZXGIdvMo4kzZeLJyTJFlXv4yUxjw5qx1V0rtfGgZ53n6mNW40krgbnKid/wk726463Lf/WE8ixinVkRa1ImrPFN8yKGK7LHj7D5EBTubmYbmHQTLdpznC2eSdUac1xCy9TS9D0/XqOLxIK9LSid7db0yeoPVbK7IKtD3/xtkeYIrp4aQIJdaAXwCgCklKLoQ0pcBRcU31dueHv3ynxGV1yH3W2N7jPbdw8hHVvKM0Y5pRpIj7JFDWMYOuSA93SPMW7IMI98AA0ZRUk0ReHf3DLDytEu0IA1G3mBS/gbUTxs+7W3P1Ef4OXaQCTgZNCm7f2ihCPdL8O/CrciAf3Ufk/cE1z8xdREqhWH5nAOJ9qMuCAMdncyG1SWIXuuQlPOP5uUPZ//nodFd7YzwQrCpolB8je0xSwi4GwzrR7sqGw8d2zpmF98b2M1bX4k="
